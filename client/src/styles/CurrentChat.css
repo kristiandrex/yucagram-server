@@ -1,0 +1,25 @@
+.current-chat {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+}
+
+.current-chat .message .own {
+  justify-content: flex-end;
+
+  
+}
+
+.message-pill {
+  background: #fff;
+}
+
+.current-chat .message.own {
+  justify-content: flex-end;
+}
+
+.current-chat .message.own .message-pill {
+  background: var(--secondary);
+}
+
+
+

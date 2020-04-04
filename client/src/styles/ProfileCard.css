@@ -1,0 +1,11 @@
+.profile-card {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.profile-card img {
+  border-radius: 50%;
+  width: 50px;
+}
