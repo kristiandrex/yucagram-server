@@ -11,6 +11,7 @@
     "purgecss": "^2.1.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-image-crop": "^8.6.1",
     "react-scripts": "3.4.1",
     "socket.io-client": "^2.3.0"
   },
@@ -35,5 +36,6 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "proxy": "http://localhost:4000"
 }

@@ -4,9 +4,7 @@
 }
 
 .current-chat .message .own {
-  justify-content: flex-end;
-
-  
+  justify-content: flex-end; 
 }
 
 .message-pill {

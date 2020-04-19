@@ -14,7 +14,7 @@ export default function RecoverPass(props) {
         <input type="email" className="form-control" placeholder="Correo electrónico"/>
       </div>
       <button className="btn btn-primary">Recuperar contraseña</button>
-      <button type="button" className="btn btn-link btn-sm mt-3" onClick={() => props.changeView(!props.view)}>
+      <button type="button" className="btn btn-link btn-sm mt-3" onClick={() => props.setView(!props.view)}>
         ¿Ya tienes una contraseña?
       </button>
     </form>
