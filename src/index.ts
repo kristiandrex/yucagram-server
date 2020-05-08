@@ -6,11 +6,13 @@ import { createServer } from 'http';
 import { connect } from 'mongoose';
 import routes from './routes/index';
 import io from './services/socket';
+import cors from 'cors';
 
 const app = express();
 
-app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(cors({ origin: '/', allowedHeaders: 'Authorization' }));
 app.use(express.static('public'));
 app.use(routes);
 

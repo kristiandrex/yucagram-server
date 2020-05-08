@@ -1,13 +1,17 @@
-import React, { useState, createRef } from 'react';
-import Cropper from 'react-image-crop';
+import React, { useState, createRef, RefObject, ChangeEvent } from 'react';
+import Cropper, { Crop } from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 
-export default function AvatarChooser(props) {
-  const inputRef = createRef();
+interface Props {
+  onSave: Function;
+}
+
+export default function AvatarChooser(props: Props) {
+  const inputRef = createRef<HTMLInputElement>();
 
   const [isDefaultAvatar, setIsDefaultAvatar] = useState(true);
-  const [src, setSrc] = useState();
-  const [crop, setCrop] = useState({
+  const [src, setSrc] = useState<string>();
+  const [crop, setCrop] = useState<Crop>({
     aspect: 1,
     unit: '%',
     width: 50,
@@ -16,48 +20,51 @@ export default function AvatarChooser(props) {
     y: 25
   });
 
-  const [visible, setVisible] = useState(false);
-  const [img, setImg] = useState();
-  const [file, setFile] = useState();
-  const [avatar, setAvatar] = useState(
+  const [visible, setVisible] = useState<boolean>(false);
+  const [img, setImg] = useState<HTMLImageElement>();
+  const [file, setFile] = useState<Blob>();
+  const [avatar, setAvatar] = useState<string>(
     'https://res.cloudinary.com/kristiantorrex/image/upload/v1587258574/undraw_male_avatar_323b_gukmtl.svg'
   );
 
-  const handleUploadAvatar = (event) => {
+  const handleUploadAvatar = (event: ChangeEvent<HTMLInputElement>) => {
     event.preventDefault();
-    const file = event.target.files[0];
+
+    const file = (event.target.files as FileList)[0];
 
     setSrc(URL.createObjectURL(file));
     setVisible(!visible);
-    event.target.value = '';
+    event.target.nodeValue = '';
   };
 
   const handleCrop = () => {
     const canvas = document.createElement('canvas');
-    canvas.width = crop.width;
-    canvas.height = crop.height;
+    canvas.width = crop.width as number;
+    canvas.height = crop.height as number;
 
-    const scaleX = img.naturalWidth / img.width;
-    const scaleY = img.naturalHeight / img.height;
-    const ctx = canvas.getContext('2d');
+    const image = img as HTMLImageElement;
+
+    const scaleX = image.naturalWidth / image.width;
+    const scaleY = image.naturalHeight / image.height;
+    const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
 
     ctx.drawImage(
-      img,
-      crop.x * scaleX,
-      crop.y * scaleY,
-      crop.width * scaleX,
-      crop.height * scaleY,
+      image,
+      (crop.x as number) * scaleX,
+      (crop.y as number) * scaleY,
+      (crop.width as number) * scaleX,
+      (crop.height as number) * scaleY,
       0,
       0,
-      crop.width,
-      crop.height
+      crop.width as number,
+      crop.height as number
     );
 
     canvas.toBlob((blob) => {
       const url = URL.createObjectURL(blob);
 
       setAvatar(url);
-      setFile(blob);
+      setFile(blob as Blob);
       setVisible(!visible);
       setIsDefaultAvatar(false);
     });
@@ -71,7 +78,7 @@ export default function AvatarChooser(props) {
             <div className='modal-content'>
               <div className='modal-body'>
                 <Cropper
-                  src={src}
+                  src={src as string}
                   onChange={(crop) => setCrop(crop)}
                   crop={crop}
                   circularCrop={true}
@@ -79,7 +86,10 @@ export default function AvatarChooser(props) {
                 />
               </div>
               <div className='modal-footer'>
-                <button className='btn btn-secondary' onClick={() => setVisible(!visible)}>
+                <button
+                  className='btn btn-secondary'
+                  onClick={() => setVisible(!visible)}
+                >
                   Cerrar
                 </button>
                 <button className='btn btn-primary' onClick={handleCrop}>
@@ -110,12 +120,11 @@ export default function AvatarChooser(props) {
             className='d-none'
             accept='.png, .jpg, .jpeg'
             onChange={handleUploadAvatar}
-            ref={inputRef}
+            ref={inputRef as RefObject<HTMLInputElement>}
           />
           <button
-            htmlFor='avatar'
             className='btn btn btn-outline-primary mr-2'
-            onClick={() => inputRef.current.click()}
+            onClick={() => (inputRef.current as HTMLInputElement).click()}
           >
             <i className='material-icons'>publish</i>
             Subir

@@ -1,6 +1,6 @@
 {
-  "short_name": "Chat",
-  "name": "Chat created using Typescript and MERN Stack",
+  "short_name": "React App",
+  "name": "Create React App Sample",
   "icons": [
     {
       "src": "favicon.ico",
@@ -20,6 +20,6 @@
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#007bff",
-  "background_color": "#f8f9fa"
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
 }

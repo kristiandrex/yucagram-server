@@ -1,14 +1,18 @@
 import { Router } from 'express';
-import user from './user';
-import login from './login';
+import users from './users';
+import signin from './signin';
 import validate from './validate';
 import upload from './upload';
+import search from './search';
+import chats from './chats';
 
 const router = Router();
 
-router.use('/users', user);
-router.use('/login', login);
+router.use('/users', users);
+router.use('/signin', signin);
 router.use('/validate', validate);
 router.use('/upload', upload);
+router.use('/search', search);
+router.use('/chats', chats);
 
 export default router;

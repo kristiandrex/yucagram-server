@@ -1,15 +1,20 @@
-import { Router } from 'express';
+import { Router, RequestHandler } from 'express';
 import User from '../models/user';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import authToken from '../middlewares/authToken';
 
 const router = Router();
+
+router.use('/:username', <RequestHandler>authToken);
 
 router.post('/', async (req, res) => {
   try {
     let body = req.body;
 
-    const password = bcrypt.hashSync(body.password, 10);
+    const salt = await bcrypt.genSalt();
+    const password = bcrypt.hashSync(body.password, salt);
+    
     body.password = password;
 
     const user = new User(req.body);
@@ -18,20 +23,7 @@ router.post('/', async (req, res) => {
 
     res.send({ user, token });
   } catch (error) {
-    res.send({ error });
-    console.log(error);
-  }
-});
-
-router.post('/:username/avatar', async (req, res) => {
-  const username = req.params.username;
-
-  try {
-    const user = await User.findOneAndUpdate({ username }, req.body, { new: true });
-
-    res.send(user);
-  } catch (error) {
-    res.send({ error });
+    res.send(error);
   }
 });
 

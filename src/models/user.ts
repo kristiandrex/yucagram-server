@@ -1,13 +1,5 @@
-import { Schema, model, Types, Document } from 'mongoose';
+import { Schema, model, Types } from 'mongoose';
 import uniqueValidator from 'mongoose-unique-validator';
-
-export interface UserI extends Document {
-  username: string;
-  email: string;
-  password: string;
-  avatar?: String;
-  chats?: Types.ObjectId[];
-}
 
 const schema = new Schema({
   username: {
@@ -29,12 +21,10 @@ const schema = new Schema({
     default:
       'https://res.cloudinary.com/kristiantorrex/image/upload/v1587258574/undraw_male_avatar_323b_gukmtl.svg'
   },
-  chats: [
-    {
-      type: Types.ObjectId,
-      ref: 'Chat'
-    }
-  ]
+  chats: [{
+    type: Types.ObjectId,
+    ref: 'Chat'
+  }]
 });
 
 schema.plugin(uniqueValidator);

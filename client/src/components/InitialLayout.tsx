@@ -13,11 +13,25 @@ export default function InitialLayout() {
         <div className='card w-100'>
           <div className='card-body shadow-sm'>
             {viewPass ? (
-              <RecoverPass view={viewPass} setView={setViewPass} />
+              <RecoverPass>{}</RecoverPass>
             ) : state ? (
-              <Signin view={state} setView={setState} />
+              <Signin>
+                <div 
+                  className='btn btn-link btn-sm' 
+                  onClick={() => setState(!state)}
+                >
+                  Regístrate
+                </div>
+              </Signin>
             ) : (
-              <Signup view={state} setView={setState} />
+              <Signup>
+                <div 
+                  className='btn btn-link btn-sm btn-block'
+                  onClick={() => setState(!state)}
+                >
+                  Inicia sesión
+                </div>
+              </Signup>
             )}
           </div>
         </div>
