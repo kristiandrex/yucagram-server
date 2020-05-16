@@ -31,7 +31,7 @@ router.get('/token', async (req, res) => {
     const _id: Types.ObjectId = Types.ObjectId(decoded);
 
     const user = <UserI>await User
-      .findById(_id)
+      .findByIdAndUpdate(_id, { $set: { socket: req.query.socket } }, { new: true })
       .populate({
         path: 'chats',
         populate: {

@@ -1,35 +1,27 @@
-import React, { useContext } from 'react';
+import React, { Fragment } from 'react';
+import { Chat, setCurrentChatType } from '../react-app-env';
 import ProfileCard from './ProfileCard';
-import { ChatContext } from './Main';
 
 interface Props {
-  usersCount: number;
-  chats: Chat[]
+  chats: Chat[];
+  setCurrentChat: setCurrentChatType;
 }
 
-export default function ListChats({ usersCount, chats }: Props) {
-  const { setCurrentChat } = useContext(ChatContext);
+export default function ListChats({ chats, setCurrentChat }: Props) {
 
   return (
-    <div>
-      {usersCount > 0 && chats.length > 0 && (
-        <div className="p-2 text-center font-weight-bold border-bottom">Tus chats</div>
-      )}
-      {chats.map(chat => (
-        <div 
-          style={{ cursor: 'pointer' }} 
-          key={chat._id} 
-          onClick={() => {
-            setCurrentChat(chat.user)
-          }}
-        >
-          <ProfileCard
-            alt={`Foto de ${chat.user.username}`}
-            avatar={chat.user.avatar}
-            username={chat.user.username}
-          />
-        </div>
-      ))}
-    </div>
+    <Fragment>
+      {
+        chats.map(chat => (
+          <div
+            key={chat._id}
+            style={{ cursor: 'pointer' }}
+            onClick={() => setCurrentChat({ chat, user: null })}
+          >
+            <ProfileCard user={chat.user} />
+          </div>
+        ))
+      }
+    </Fragment>
   );
 }

@@ -21,6 +21,10 @@ const schema = new Schema({
     default:
       'https://res.cloudinary.com/kristiantorrex/image/upload/v1587258574/undraw_male_avatar_323b_gukmtl.svg'
   },
+  socket: {
+    type: String,
+    default: null
+  },
   chats: [{
     type: Types.ObjectId,
     ref: 'Chat'

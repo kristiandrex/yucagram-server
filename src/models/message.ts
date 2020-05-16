@@ -3,19 +3,22 @@ import { Schema, model, Types } from 'mongoose';
 const schema = new Schema({
   from: {
     type: Types.ObjectId,
-    ref: 'User'
+    ref: 'User',
+    required: true
   }, 
   to: {
     type: Types.ObjectId,
-    ref: 'User'
+    ref: 'User',
+    required: true
   },
-  content: String,
-  file: {
-    type: Boolean,
-    default: false
+  content: {
+    type: String,
+    required: true
   },
-  url: String,
-  date: Date
+  date: {
+    type: String,
+    required: true
+  }
 });
 
 export default model('Message', schema);

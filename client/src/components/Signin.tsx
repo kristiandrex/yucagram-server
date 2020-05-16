@@ -33,7 +33,8 @@ export default function Signin(props: Props) {
     try {
       const response = await axios.post('/signin', data);
       const { user, token } = response.data;
-      setToken({ value: token });
+      
+      setToken(token);
       setUser(user);
     } catch (error) {
       setAlert(error.response.data);

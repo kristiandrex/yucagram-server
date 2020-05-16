@@ -3,11 +3,13 @@ import { model, Schema, Types } from 'mongoose';
 const schema = new Schema({
   user: {
     type: Types.ObjectId,
-    ref: 'User'
+    ref: 'User',
+    required: true
   },
   room: {
     type: Types.ObjectId,
-    ref: 'Room'
+    ref: 'Room',
+    required: true
   }
 });
 

@@ -1,8 +1,9 @@
 import { Router } from 'express';
 import User from '../models/user';
+import authToken from '../middlewares/authToken';
 const router = Router();
 
-router.post('/', async (req, res) => {
+router.post('/', authToken, async (req, res) => {
   try {
     const value = req.body.value;
     const usernames = req.body.usernames;

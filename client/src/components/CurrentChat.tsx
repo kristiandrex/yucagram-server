@@ -1,92 +1,64 @@
-import React, { FormEvent, useState, useRef, Fragment, useContext, useEffect } from 'react';
+import React, { useRef, FormEvent, useContext, useState, useEffect } from 'react';
+import { Chat } from '../react-app-env';
 import ProfileCard from './ProfileCard';
-import axios from 'axios';
 import '../styles/CurrentChat.css';
-import { TokenContext } from './App';
+import { UserContext } from './App';
 
 interface Props {
-  user: User | null;
-  chats: Chat[];
+  chat: Chat;
+  reloadChats: () => Promise<void>;
 }
 
-export default function CurrentChat({ user, chats }: Props) {
-  
-  const [exists, setExists] = useState<boolean>(false);
-  const [messages, setMessages] = useState<Message[]>([]);
-  const { token } = useContext(TokenContext);
-
-  useEffect(() => {
-    console.log(chats);
-  }, [chats]);
-
-  const inputRef = useRef<HTMLInputElement>(null);
+export default function CurrentChat({ chat, reloadChats }: Props) {
+  const { user } = useContext(UserContext);
+  const [value, setValue] = useState<string>('');
+  const messageRef = useRef<HTMLInputElement>(null);
 
   const handleSendMessage = (event: FormEvent) => {
     event.preventDefault();
 
-    const message = inputRef.current?.value;
-  };
+    const message: string = messageRef.current?.value.trim() as string;
 
-  const handleAddChat = async () => {
-    try {
-      const response = await axios.post('/chats', { user: user?._id }, { headers: { authorization: token.value } });
-      console.log(response.data);
+    if (message?.length <= 0) {
+      return;
     }
 
-    catch (error) {
-      console.error(error);
-    }
+    const data = {
+      from: user?._id,
+      to: chat.user._id,
+      content: message,
+      date: new Date()
+    };
   };
 
-  if (!user) {
-    return null;
-  }
+  useEffect(() => {
+    setValue('');
+  }, [chat]);
 
   return (
-    <div className="current-chat h-100 col-9">
+    <div className="col-9 current-chat">
       <div className="bg-primary text-white">
-        <ProfileCard
-          alt={`Foto de ${user.username}`}
-          avatar={user.avatar}
-          username={user.username}
-        />
+        <ProfileCard user={chat.user} />
       </div>
-      {
-        exists ? (
-          <Fragment>
-            <div className="list-messages p-2">
-            </div>
-            <div className="box-message">
-              <form className="p-2 bg-white border-top" onSubmit={handleSendMessage}>
-                <input
-                  type="text"
-                  className="form-control"
-                  placeholder="Escribe un mensaje..."
-                  ref={inputRef}
-                />
-                <button className="btn btn-link">
-                  <i className="material-icons">send</i>
-                </button>
-              </form>
-            </div>
-          </Fragment>
-        ) : (
-            <div className="p-2 d-flex align-items-center justify-content-center">
-              <div className="alert alert-secondary text-center">
-                <h5 className="alert-heading">¿Quieres agregar este chat?</h5>
-                <hr />
-                <div>
-                  <button
-                    className="btn btn-outline-primary px-4"
-                    onClick={handleAddChat}
-                  >
-                    Agregarlo
-                </button>
-                </div>
-              </div>
-            </div>
-          )
-      }
+      <div className="list-messages">
+      </div>
+      <div className="p-2 border-top">
+        <form
+          className="d-flex align-items-center"
+          onSubmit={handleSendMessage}
+        >
+          <input
+            type="text"
+            ref={messageRef}
+            className="form-control"
+            value={value}
+            onChange={(event) => setValue(event.target.value)}
+          />
+          <button className="btn btn-link">
+            <i className="material-icons">send</i>
+          </button>
+        </form>
+      </div>
     </div>
-  )
+  );
 }

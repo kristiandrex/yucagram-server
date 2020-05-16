@@ -1,75 +1,87 @@
-import React, { useContext, ChangeEvent, useState, createContext, SetStateAction, Dispatch } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import ProfileCard from './ProfileCard';
-import { UserContext } from './App';
-import axios from 'axios';
-import ListChats from './ListChats';
-import ListUsers from './ListUsers';
+import { UserContext, TokenContext } from './App';
 import CurrentChat from './CurrentChat';
-
-interface ChatCTX {
-  setCurrentChat: Dispatch<SetStateAction<User | null>>;
-}
-
-export const ChatContext = createContext<ChatCTX>({
-  setCurrentChat: () => { },
-});
+import { User, Chat, CurrentChatType, ResultsType } from '../react-app-env';
+import NoCurrentChat from './NoCurrentChat';
+import Search from './Search';
+import ListChats from './ListChats';
+import ListResults from './ListResults';
+import axios from 'axios';
 
 export default function Main() {
   const userContext = useContext(UserContext);
   const user: User = userContext.user as User;
+  const { token } = useContext(TokenContext);
 
-  const [chats, setChats] = useState<Chat[]>(user.chats ? user.chats : []);
-  const [users, setUsers] = useState<User[]>([]);
-  const [currentChat, setCurrentChat] = useState<User | null>(null);
+  const [chats, setChats] = useState<Chat[]> ([]);
+  const [currentChat, setCurrentChat] = useState<CurrentChatType>({ chat: null, user: null });
+  const [searching, setSearching] = useState<boolean>(false);
+  const [results, setResults] = useState<ResultsType>({ chats: [], users: [] });
 
-  const handleChangeSearch = async (event: ChangeEvent<HTMLInputElement>) => {
-    const value: string = event.target.value.trim();
-
-    if (value.length === 0) {
-      setUsers([]);
-      setChats(user.chats);
-
-      return;
-    }
-
-    const chats: Chat[] = user.chats.filter(chat => chat.user.username.includes(value));
-    const usernames: string[] = chats.map(chat => chat.user.username);
-
+  const reloadChats = async () => {
     try {
-      const response = await axios.post('/search', { value, usernames });
-      setUsers(response.data);
+      const response = await axios.get('/chats', { headers: { authorization: token } });
+
+      const chats: Chat[] = response.data;
+      chats.sort((a, b) => Date.parse(b.room.lastModified) - Date.parse(a.room.lastModified));
+
       setChats(chats);
+      setSearching(false);
     }
 
     catch (error) {
       console.error(error);
     }
-  }
+  };
+
+  useEffect(() => {
+    const chats = user.chats
+
+    chats.sort((a, b) => Date.parse(b.room.lastModified) - Date.parse(a.room.lastModified));
+
+    setChats(chats);
+  }, [user.chats]);
 
   return (
     <div className="row no-gutters h-100">
       <div className="col-3 bg-white border-right">
         <div className="bg-primary text-white">
-          <ProfileCard
-            alt='Tu foto'
-            avatar={user.avatar}
-            username={user.username}
-          />
+          <ProfileCard user={user} />
         </div>
-        <div className="p-2 border-bottom">
-          <input
-            type="text"
-            className="form-control"
-            placeholder="Buscar..."
-            onChange={handleChangeSearch}
-          />
-        </div>
-        <ChatContext.Provider value={{ setCurrentChat }}>
-          <ListChats usersCount={users.length} chats={chats} />
-          <ListUsers users={users} />
-        </ChatContext.Provider>
+        <Search
+          setResults={setResults}
+          setSearching={setSearching}
+          chats={chats}
+        />
+        {
+          searching ? (
+            <ListResults
+              results={results}
+              setCurrentChat={setCurrentChat}
+            />
+          ) : (
+            <ListChats
+              chats={chats}
+              setCurrentChat={setCurrentChat}
+            />
+          )
+        }
       </div>
-      <CurrentChat user={currentChat} chats={chats} />
+      {
+        currentChat.chat ? (
+          <CurrentChat 
+            chat={currentChat.chat}
+            reloadChats={reloadChats}
+          />
+        ) : (
+          <NoCurrentChat
+            user={currentChat.user}
+            setCurrentChat={setCurrentChat}
+            reloadChats={reloadChats}
+          />
+        )
+      }
     </div>
   );
 }

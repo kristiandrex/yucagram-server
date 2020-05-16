@@ -6,7 +6,11 @@ const schema = new Schema({
       type: Types.ObjectId,
       ref: 'Message'
     }
-  ]
+  ],
+  lastModified: {
+    type: Date,
+    required: true
+  }
 });
 
 export default model('Room', schema);

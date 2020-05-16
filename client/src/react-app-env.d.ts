@@ -1,48 +1,62 @@
 /// <reference types="react-scripts" />
 /// <reference types="react" />
 
-interface AlertProps {
+import { Dispatch, SetStateAction } from "react";
+
+export interface AlertProps {
   message: string;
   type: string;
   onClose: Function;
 }
 
-interface User {
+export interface User {
   _id: string;
   username: string;
   avatar: string;
   chats: Chat[];
+  socket: string | null;
 }
 
-interface Chat {
+export interface Chat {
   _id: string;
   user: User;
   room: {
     messages: Message[];
+    lastModified: string;
   }
 }
 
-interface Message {
+export interface Message {
   _id: string;
   from: string;
   to: string;
   content: string;
-  file: boolean;
-  url: string;
   date: Date;
 }
 
-interface UserCTX {
-  user: User | undefined;
-  setUser: Function;
+export interface UserCTX {
+  user: User | null;
+  setUser: Dispatch<SetStateAction<User | null>>;
 }
 
-interface TokenCTX {
-  token: any;
-  setToken: Function;
+export interface TokenCTX {
+  token: string | null;
+  setToken: (value: string) => void;
+  removeToken: () => void; 
 }
 
-interface Current {
+export interface CurrentChatType {
+  user: User | null;
   chat: Chat | null;
-  exists: boolean;
 }
+
+export interface ResultsType {
+  users: User[];
+  chats: Chat[];
+}
+
+export type setCurrentChatType = Dispatch<SetStateAction<CurrentChatType>>;
+
+export type setSearchingType = Dispatch<SetStateAction<boolean>>;
+
+export type setResultsType = Dispatch<SetStateAction<ResultsType>>;

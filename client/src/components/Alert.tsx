@@ -1,4 +1,5 @@
 import React from 'react';
+import { AlertProps } from '../react-app-env';
 
 export default function Alert(props: AlertProps) {
   if (!props.message) {
