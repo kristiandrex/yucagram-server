@@ -1,9 +1,0 @@
-.current-chat {
-  display: grid;
-  grid-template-rows: auto 1fr auto;
-}
-
-.current-chat .box-message form {
-  display: flex;
-  align-items: center;
-}

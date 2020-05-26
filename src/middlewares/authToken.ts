@@ -15,7 +15,10 @@ export default async function authToken(req: Request, res: Response, next: NextF
     res.locals.user = user;
 
     next();
-  } catch (error) {
+  }
+
+  catch (error) {
+    console.error(error);
     res.sendStatus(400);
   }
 }

@@ -12,6 +12,7 @@
     "@types/react-dom": "^16.9.7",
     "@types/react-image-crop": "^8.1.2",
     "@types/socket.io-client": "^1.4.32",
+    "@types/styled-components": "^5.1.0",
     "axios": "^0.19.2",
     "bootstrap": "^4.4.1",
     "react": "^16.13.1",
@@ -19,6 +20,7 @@
     "react-image-crop": "^8.6.2",
     "react-scripts": "3.4.1",
     "socket.io-client": "^2.3.0",
+    "styled-components": "^5.1.0",
     "typescript": "^3.7.5"
   },
   "scripts": {

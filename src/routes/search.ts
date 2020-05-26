@@ -6,10 +6,10 @@ const router = Router();
 router.post('/', authToken, async (req, res) => {
   try {
     const value = req.body.value;
-    const usernames = req.body.usernames;
+    const notInclude = req.body.notInclude;
 
     const users = await User
-      .find({ username: { $regex: value, $nin: usernames } }, 'avatar username')
+      .find({ username: { $regex: value, $nin: notInclude } }, 'avatar username')
       .limit(5);
 
     res.send(users);

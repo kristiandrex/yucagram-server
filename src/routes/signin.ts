@@ -18,7 +18,9 @@ router.post('/', async (req, res) => {
     const token = jwt.sign(user._id.toString(), <string>process.env.SEED);
 
     res.send({ user, token });
-  } catch (error) {
+  }
+
+  catch (error) {
     console.log(error);
     res.status(500).send('Intenta más tarde');
   }
@@ -31,7 +33,7 @@ router.get('/token', async (req, res) => {
     const _id: Types.ObjectId = Types.ObjectId(decoded);
 
     const user = <UserI>await User
-      .findByIdAndUpdate(_id, { $set: { socket: req.query.socket } }, { new: true })
+      .findById(_id)
       .populate({
         path: 'chats',
         populate: {
@@ -41,15 +43,21 @@ router.get('/token', async (req, res) => {
       })
       .populate({
         path: 'chats',
-        populate: 'room'
+        populate: {
+          path: 'room',
+          populate: 'messages'
+        }
       });
 
     if (!user) {
-      return res.sendStatus(404);
+      return res.sendStatus(400);
     }
 
+    user.chats.sort((a, b) => b.room.updatedAt.getTime() - a.room.updatedAt.getTime());
     res.send(user);
-  } catch (error) {
+  }
+
+  catch (error) {
     console.error(error);
     res.sendStatus(400);
   }

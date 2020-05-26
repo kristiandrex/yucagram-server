@@ -1,6 +1,6 @@
-import React, { Fragment, FormEvent, ReactElement, useRef } from 'react';
+import React, { Fragment, FormEvent, ReactElement, useRef, useContext } from 'react';
 import axios from 'axios';
-import {} from './App';
+import { UserContext, TokenContext } from '../context';
 
 interface Props {
   children: ReactElement;
@@ -10,6 +10,9 @@ export default function Signup(props: Props) {
   const usernameRef = useRef<HTMLInputElement>(null);
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
+
+  const { setUser } = useContext(UserContext);
+  const { setToken } = useContext(TokenContext);
 
   const handleFormSubmit = async (event: FormEvent) => {
     event.preventDefault();
@@ -21,9 +24,12 @@ export default function Signup(props: Props) {
         password: passwordRef.current?.value
       };
 
-      const response = await axios.post('/users/', data);
-      console.log(response.data);
-    } catch (error) {
+      const response = await axios.post('/signup/', data);
+      setUser(response.data.user)
+      setToken(response.data.token);
+    } 
+    
+    catch (error) {
 
     }
   };

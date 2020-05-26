@@ -1,64 +1,63 @@
-import React, { useRef, FormEvent, useContext, useState, useEffect } from 'react';
-import { Chat } from '../react-app-env';
+import React, { useContext, useState, useCallback, useRef } from 'react';
+import { Chat, Message } from '../react-app-env';
+import styled from 'styled-components';
 import ProfileCard from './ProfileCard';
-import '../styles/CurrentChat.css';
-import { UserContext } from './App';
+import { UserContext, SocketContext, TokenContext } from '../context';
+import ListMessages from './ListMessages';
+import MessageBox from './MessageBox';
 
 interface Props {
-  chat: Chat;
-  reloadChats: () => Promise<void>;
+  currentChat: Chat;
 }
 
-export default function CurrentChat({ chat, reloadChats }: Props) {
-  const { user } = useContext(UserContext);
-  const [value, setValue] = useState<string>('');
-  const messageRef = useRef<HTMLInputElement>(null);
+const StyledDiv = styled.div`
+  height: 100%;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
 
-  const handleSendMessage = (event: FormEvent) => {
-    event.preventDefault();
+  .list-messages {
+    overflow-y: auto;
 
-    const message: string = messageRef.current?.value.trim() as string;
-
-    if (message?.length <= 0) {
-      return;
+    .message-row {
+      padding-bottom: 8px;
     }
 
-    const data = {
-      from: user?._id,
-      to: chat.user._id,
-      content: message,
-      date: new Date()
-    };
-  };
+    .message-row:first-child {
+      padding-top: 8px;
+    }
+  }
+`;
 
-  useEffect(() => {
-    setValue('');
-  }, [chat]);
+export default function CurrentChat({ currentChat }: Props) {
+  const { user } = useContext(UserContext);
+  const socket = useContext(SocketContext);
+  const { token } = useContext(TokenContext);
+  const [messages, setMessages] = useState<Message[]>(currentChat.room.messages || []);
+  const listMessagesRef = useRef<HTMLDivElement>(null);
+
+
+  const handleSendMessage = useCallback((value: string) => {
+    const message: Message = {
+      content: value,
+      date: new Date(),
+      from: user?._id as string,
+      to: currentChat.user._id,
+      room: currentChat.room._id
+    };
+
+    socket?.emit('sendMessage', { token, message }, (response: Message) => {
+      setMessages([...messages, response]);
+    });
+
+  }, [user, currentChat, token, messages, socket]);
 
   return (
-    <div className="col-9 current-chat">
-      <div className="bg-primary text-white">
-        <ProfileCard user={chat.user} />
+    <StyledDiv className="col-9">
+      <div className="shadow-sm">
+        <ProfileCard user={currentChat.user} />
       </div>
-      <div className="list-messages">
-      </div>
-      <div className="p-2 border-top">
-        <form
-          className="d-flex align-items-center"
-          onSubmit={handleSendMessage}
-        >
-          <input
-            type="text"
-            ref={messageRef}
-            className="form-control"
-            value={value}
-            onChange={(event) => setValue(event.target.value)}
-          />
-          <button className="btn btn-link">
-            <i className="material-icons">send</i>
-          </button>
-        </form>
-      </div>
-    </div>
+      <ListMessages messages={messages}/>
+      <MessageBox handleSendMessage={handleSendMessage} />
+    </StyledDiv>
   );
 }

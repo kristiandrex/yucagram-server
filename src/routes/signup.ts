@@ -1,12 +1,9 @@
-import { Router, RequestHandler } from 'express';
+import { Router } from 'express';
 import User from '../models/user';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import authToken from '../middlewares/authToken';
 
 const router = Router();
-
-router.use('/:username', <RequestHandler>authToken);
 
 router.post('/', async (req, res) => {
   try {
@@ -21,8 +18,10 @@ router.post('/', async (req, res) => {
     await user.save();
     const token = jwt.sign(user._id.toString(), <string>process.env.SEED);
 
-    res.send({ user, token });
-  } catch (error) {
+    res.send({ token });
+  } 
+  
+  catch (error) {
     res.send(error);
   }
 });

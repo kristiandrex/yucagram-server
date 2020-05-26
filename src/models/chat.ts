@@ -1,4 +1,5 @@
 import { model, Schema, Types } from 'mongoose';
+import { ChatI } from '../@types';
 
 const schema = new Schema({
   user: {
@@ -11,6 +12,6 @@ const schema = new Schema({
     ref: 'Room',
     required: true
   }
-});
+}, { timestamps: true });
 
-export default model('Chat', schema);
+export default model<ChatI>('Chat', schema);

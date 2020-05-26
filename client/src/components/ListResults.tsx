@@ -1,61 +1,29 @@
-import React from 'react';
-import { ResultsType, setCurrentChatType } from '../react-app-env';
-import ProfileCard from './ProfileCard';
+import React, { memo } from 'react';
+import { ResultsType } from '../react-app-env';
+import ListUsers from './ListUsers';
+import ListChats from './ListChats';
 
 interface Props {
   results: ResultsType;
-  setCurrentChat: setCurrentChatType;
 }
 
-export default function ListResults({ results, setCurrentChat }: Props) {
-  const isChatsEmpty: boolean = results.chats.length === 0;
-  const isUsersEmpty: boolean = results.users.length === 0;
-
-  const listChats = results.chats.map(chat => (
-    <div
-      key={chat._id}
-      onClick={() => setCurrentChat({ chat, user: null })}
-      style={{ cursor: 'pointer' }}
-    >
-      <ProfileCard user={chat.user} />
-    </div>
-  ));
-
-  const listUsers = results.users.map(user => (
-    <div
-      key={user._id}
-      style={{ cursor: 'pointer' }}
-      onClick={() => setCurrentChat({ chat: null, user })}
-    >
-      <ProfileCard user={user} />
-    </div>
-  ));
-
+function ListResults({ results }: Props) {
   return (
     <div>
       {
-        !isChatsEmpty && (
-          <div className="p-2 text-center font-weight-bold border-bottom">
-            Tus chats
-          </div>
+        results.chats.length > 0 && (
+          <div className="p-2 border-bottom font-weight-bold text-center">Chats</div>
         )
       }
-      {listChats}
+      <ListChats chats={results.chats} />
       {
-        !isUsersEmpty && (
-          <div className="p-2 text-center font-weight-bold border-bottom">
-            Usuarios
-          </div>
+        results.users.length > 0 && (
+          <div className="p-2 border-bottom font-weight-bold text-center">Usuarios</div>
         )
       }
-      {listUsers}
-      {
-        isChatsEmpty && isUsersEmpty && (
-          <div className="p-4 text-center font-italic">
-            <span>No hay resultados</span>
-          </div>
-        )
-      }
+      <ListUsers users={results.users} />
     </div>
   );
 }
+
+export default memo(ListResults);

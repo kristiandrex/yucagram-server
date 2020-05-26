@@ -1,14 +1,7 @@
-import React, {
-  useContext,
-  useState,
-  FormEvent,
-  createRef,
-  ReactElement
-} from 'react';
+import React, { useContext, FormEvent, ReactElement, useRef } from 'react';
 
 import axios from 'axios';
-import { TokenContext, UserContext } from './App';
-import Alert from './Alert';
+import { TokenContext, UserContext } from '../context';
 
 interface Props {
   children: ReactElement;
@@ -17,33 +10,31 @@ interface Props {
 export default function Signin(props: Props) {
   const { setToken } = useContext(TokenContext);
   const { setUser } = useContext(UserContext);
-  const [alert, setAlert] = useState<string>();
 
-  const usernameRef = createRef<HTMLInputElement>();
-  const passwordRef = createRef<HTMLInputElement>();
+  const usernameRef = useRef<HTMLInputElement>(null);
+  const passwordRef = useRef<HTMLInputElement>(null);
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
 
     const data = {
-      username: (usernameRef.current as HTMLInputElement).value,
-      password: (passwordRef.current as HTMLInputElement).value
+      username: usernameRef.current?.value,
+      password: passwordRef.current?.value
     };
 
     try {
       const response = await axios.post('/signin', data);
       const { user, token } = response.data;
-      
+
       setToken(token);
       setUser(user);
     } catch (error) {
-      setAlert(error.response.data);
+      console.log(error)
     }
   };
 
   return (
     <form onSubmit={handleSubmit}>
-      <Alert type='danger' message={alert as string} onClose={setAlert} />
       <div className='form-group'>
         <input
           type='text'

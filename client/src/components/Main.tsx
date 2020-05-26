@@ -1,87 +1,58 @@
-import React, { useContext, useState, useEffect } from 'react';
-import ProfileCard from './ProfileCard';
-import { UserContext, TokenContext } from './App';
+import React, { useContext, useEffect, useState } from 'react';
+import { TokenContext, CurrentUserContext, SocketContext, CurrentChatContext } from '../context'
+import LateralSection from './LateralSection';
+import { User, Chat } from '../react-app-env';
+import CurrentUser from './CurrentUser';
 import CurrentChat from './CurrentChat';
-import { User, Chat, CurrentChatType, ResultsType } from '../react-app-env';
-import NoCurrentChat from './NoCurrentChat';
-import Search from './Search';
-import ListChats from './ListChats';
-import ListResults from './ListResults';
-import axios from 'axios';
+import styled from 'styled-components';
+
+const MainStyled = styled.main`
+  height: 100vh;
+  overflow: hidden;
+`;
 
 export default function Main() {
-  const userContext = useContext(UserContext);
-  const user: User = userContext.user as User;
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [currentChat, setCurrentChat] = useState<Chat | null>(null);
+
   const { token } = useContext(TokenContext);
-
-  const [chats, setChats] = useState<Chat[]> ([]);
-  const [currentChat, setCurrentChat] = useState<CurrentChatType>({ chat: null, user: null });
-  const [searching, setSearching] = useState<boolean>(false);
-  const [results, setResults] = useState<ResultsType>({ chats: [], users: [] });
-
-  const reloadChats = async () => {
-    try {
-      const response = await axios.get('/chats', { headers: { authorization: token } });
-
-      const chats: Chat[] = response.data;
-      chats.sort((a, b) => Date.parse(b.room.lastModified) - Date.parse(a.room.lastModified));
-
-      setChats(chats);
-      setSearching(false);
-    }
-
-    catch (error) {
-      console.error(error);
-    }
-  };
+  const socket = useContext(SocketContext);
 
   useEffect(() => {
-    const chats = user.chats
+    socket?.emit('signin', token);
 
-    chats.sort((a, b) => Date.parse(b.room.lastModified) - Date.parse(a.room.lastModified));
+    socket?.on('reloadChats', () => {
+      console.log(':D');
+    });
 
-    setChats(chats);
-  }, [user.chats]);
+    socket?.on('sendMessage', (data: any) => {
+      console.log(data);
+    });
+  }, [token, socket]);
+
+  let currentSection = null;
+
+  if (currentUser !== null) {
+    currentSection = (
+      <CurrentUser
+        currentUser={currentUser}
+        setCurrentChat={setCurrentChat}
+      />
+    );
+  }
+
+  if (currentChat !== null) {
+    currentSection = <CurrentChat currentChat={currentChat} />
+  }
 
   return (
-    <div className="row no-gutters h-100">
-      <div className="col-3 bg-white border-right">
-        <div className="bg-primary text-white">
-          <ProfileCard user={user} />
-        </div>
-        <Search
-          setResults={setResults}
-          setSearching={setSearching}
-          chats={chats}
-        />
-        {
-          searching ? (
-            <ListResults
-              results={results}
-              setCurrentChat={setCurrentChat}
-            />
-          ) : (
-            <ListChats
-              chats={chats}
-              setCurrentChat={setCurrentChat}
-            />
-          )
-        }
-      </div>
-      {
-        currentChat.chat ? (
-          <CurrentChat 
-            chat={currentChat.chat}
-            reloadChats={reloadChats}
-          />
-        ) : (
-          <NoCurrentChat
-            user={currentChat.user}
-            setCurrentChat={setCurrentChat}
-            reloadChats={reloadChats}
-          />
-        )
-      }
-    </div>
+    <CurrentChatContext.Provider value={setCurrentChat}>
+      <CurrentUserContext.Provider value={setCurrentUser}>
+        <MainStyled className="row no-gutters">
+          <LateralSection />
+          {currentSection}
+        </MainStyled>
+      </CurrentUserContext.Provider>
+    </CurrentChatContext.Provider>
   );
 }

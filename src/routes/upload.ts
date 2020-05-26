@@ -8,7 +8,9 @@ router.post('/avatar', multer.avatar, async (req, res) => {
   try {
     const upload = await cloudinary.uploader.upload(req.file.path);
     res.send(upload);
-  } catch (error) {
+  } 
+  
+  catch (error) {
     res.send({ error });
   }
 });

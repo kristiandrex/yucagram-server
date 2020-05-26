@@ -1,27 +1,15 @@
-import React, { Fragment } from 'react';
-import { Chat, setCurrentChatType } from '../react-app-env';
-import ProfileCard from './ProfileCard';
+import React from 'react';
+import ItemListChats from './ItemListChats';
+import { Chat } from '../react-app-env';
 
 interface Props {
   chats: Chat[];
-  setCurrentChat: setCurrentChatType;
 }
 
-export default function ListChats({ chats, setCurrentChat }: Props) {
-
+export default function ListChats({ chats }: Props) {
   return (
-    <Fragment>
-      {
-        chats.map(chat => (
-          <div
-            key={chat._id}
-            style={{ cursor: 'pointer' }}
-            onClick={() => setCurrentChat({ chat, user: null })}
-          >
-            <ProfileCard user={chat.user} />
-          </div>
-        ))
-      }
-    </Fragment>
+    <div>
+      {chats.map(chat => <ItemListChats key={chat._id} chat={chat} />)}
+    </div>
   );
 }

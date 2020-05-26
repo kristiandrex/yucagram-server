@@ -1,6 +1,12 @@
 import { Schema, model, Types } from 'mongoose';
+import { MessageI } from '../@types';
 
 const schema = new Schema({
+  room: {
+    type: Types.ObjectId,
+    ref: 'Chat',
+    required: true
+  },
   from: {
     type: Types.ObjectId,
     ref: 'User',
@@ -16,9 +22,9 @@ const schema = new Schema({
     required: true
   },
   date: {
-    type: String,
+    type: Date,
     required: true
   }
 });
 
-export default model('Message', schema);
+export default model<MessageI>('Message', schema);

@@ -4,12 +4,27 @@ export interface UserI extends Document {
   username: string;
   email: string;
   password: string;
-  avatar?: string;
-  chats?: [Types.ObjectId];
-  _id: Types.ObjectId;
+  avatar: string;
+  chats: ChatI[];
 }
 
 export interface ChatI extends Document {
-  _id: Types.ObjectId;
-  messages: [string]
+  user: {
+    _id: Types.ObjectId;
+    username: string;
+    avatar: string;
+  },
+  room: {
+    _id: Types.ObjectId;
+    updatedAt: Date;
+    messages: MessageI[]
+  }
+}
+
+export interface MessageI extends Document {
+  from: Types.ObjectId;
+  to: Types.ObjectId,
+  content: string,
+  date: Date,
+  room: Types.ObjectId
 }
