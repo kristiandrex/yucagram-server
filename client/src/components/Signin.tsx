@@ -1,18 +1,16 @@
-import React, { useContext, FormEvent, ReactElement, useRef } from 'react';
-
+import React, { FormEvent, ReactElement, useRef } from 'react';
 import axios from 'axios';
-import { TokenContext, UserContext } from '../context';
+import { useDispatch } from 'react-redux';
 
 interface Props {
   children: ReactElement;
 }
 
 export default function Signin(props: Props) {
-  const { setToken } = useContext(TokenContext);
-  const { setUser } = useContext(UserContext);
-
   const usernameRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
+
+  const dispatch = useDispatch();
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
@@ -24,10 +22,17 @@ export default function Signin(props: Props) {
 
     try {
       const response = await axios.post('/signin', data);
-      const { user, token } = response.data;
 
-      setToken(token);
-      setUser(user);
+      dispatch({
+        type: 'SET_TOKEN',
+        payload: response.data.token
+      });
+
+      dispatch({
+        type: 'SET_USER',
+        payload: response.data.user
+      });
+
     } catch (error) {
       console.log(error)
     }

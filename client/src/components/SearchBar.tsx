@@ -1,18 +1,22 @@
-import React, { ChangeEvent, useContext, Dispatch, SetStateAction, useCallback } from 'react';
-import { TokenContext, UserContext } from '../context';
-import { Chat, ResultsType } from '../react-app-env';
+import React, { ChangeEvent, Dispatch, SetStateAction, useCallback, useEffect, useState } from 'react';
+import { Chat, ResultsType, State } from '../react-app-env';
 import axios from 'axios';
+import { useSelector } from 'react-redux';
 
 interface Props {
   setResults: Dispatch<SetStateAction<ResultsType>>;
   setSearching: Dispatch<SetStateAction<boolean>>;
+  searching: boolean;
 }
 
-export default function SearchBar({ setResults, setSearching }: Props) {
-  const { token } = useContext(TokenContext);
-  const { user } = useContext(UserContext);
+export default function SearchBar({ setResults, setSearching, searching }: Props) {
+  const { user, token } = useSelector((state: State) => ({ user: state.user, token: state.token }));
+
+  const [value, setValue] = useState<string>('');
 
   const handleSearch = useCallback(async (event: ChangeEvent<HTMLInputElement>) => {
+    setValue(event.target.value);
+
     const value: string = event.target.value.trim();
 
     if (value.length === 0) {
@@ -34,6 +38,11 @@ export default function SearchBar({ setResults, setSearching }: Props) {
 
   }, [setResults, token, setSearching, user]);
 
+  useEffect(() => {
+    if (!searching)
+      setValue('');
+  }, [searching]);
+
   return (
     <div className="p-2 border-bottom">
       <input
@@ -41,6 +50,7 @@ export default function SearchBar({ setResults, setSearching }: Props) {
         className="form-control"
         placeholder="Buscar..."
         onChange={handleSearch}
+        value={value}
       />
     </div>
   );

@@ -17,7 +17,9 @@ app.use(express.static('public'));
 app.use(routes);
 
 const server = createServer(app);
-io(server);
+const socket = io(server);
+
+app.set('socket', socket);
 
 server.listen(process.env.PORT, () => {
   console.log('Server on port', process.env.PORT);

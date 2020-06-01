@@ -1,46 +1,87 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, memo, useCallback, useEffect, useMemo } from 'react';
 import styled from 'styled-components';
-import { Chat, User } from '../react-app-env';
-import { CurrentChatContext, CurrentUserContext } from '../context';
+import { Chat, Message, ActionI, State } from '../react-app-env';
+import { useDispatch, useSelector } from 'react-redux';
+import { Dispatch } from 'redux';
 
 interface Props {
-  chat: Chat;
+  chatFromParent: Chat;
 }
 
-const StyledDiv = styled.div`
+const ItemListChatsStyled = styled.div`
   cursor: pointer;
   display: grid;
   grid-template-columns: 1fr auto auto;
   align-items: center;
+  grid-template-areas:  "avatar username badge options"
+                        "avatar message  badge options";
+  grid-template-columns: 47px 1fr auto auto;
+  grid-column-gap: .5rem;
+
+  .avatar {
+    grid-area: avatar;
+  }
+
+  .username {
+    grid-area: username;
+  }
+
+  .last-message {
+    grid-area: message;
+  }
+
+  .badge {
+    grid-area: badge;
+  }
+
+  .options {
+    grid-area: options;
+  }
 `;
 
-export default function ItemListChats({ chat }: Props) {
+function ItemListChats({ chatFromParent }: Props) {
   const [count, setCount] = useState<number>(0);
-  const user: User = chat.user;
+  const [chat, setChat] = useState<Chat>(chatFromParent);
 
-  const setCurrentChat = useContext(CurrentChatContext);
-  const setCurrentUser = useContext(CurrentUserContext);
+  const currentChat = useSelector((state: State) => state.current.chat);
+  const dispatch = useDispatch<Dispatch<ActionI>>();
 
-  const handleClick = () => {
-    setCurrentChat(chat);
-    setCurrentUser(null);
-  };
+  const lastMessage: string = useMemo(() => {
+    const messages: Message[] = chat.room.messages;
+    const length: number = messages.length;
+
+    return length > 0 ? messages[length - 1].content : '';
+  }, [chat]);
+
+  const handleClick = useCallback(() => {
+
+    dispatch({
+      type: 'SET_CURRENT_CHAT',
+      payload: chatFromParent
+    });
+
+  }, [chatFromParent, dispatch]);
+
+  useEffect(() => {
+
+  }, [currentChat]);
 
   return (
-    <StyledDiv
+    <ItemListChatsStyled
       className="border-bottom p-2"
       onClick={handleClick}
     >
-      <div className="d-flex align-items-center">
-        <div className='rounded-circle border'>
-          <img src={user.avatar} alt={`Foto de ${user.username}`} height='47px' width='47px' />
-        </div>
-        <span className='ml-2 font-weight-bold'>{user.username}</span>
+      <div className='avatar rounded-circle border'>
+        <img src={chat.user.avatar} alt={`Foto de ${chat.user.username}`} height='47px' width='47px' />
       </div>
-      {count > 0 && <span className="badge badge-primary mr-2">{count}</span>}
-      <div className='material-icons' style={{ cursor: 'pointer' }}>
+      <span className='username font-weight-bold'>{chat.user.username}</span>
+      <span className="last-message">{lastMessage}</span>
+      {count > 0 && <span className="badge badge-primary">{count}</span>}
+      <div className='options material-icons' style={{ cursor: 'pointer' }}>
         more_vert
       </div>
-    </StyledDiv>
+    </ItemListChatsStyled>
   );
 }
+
+export default memo(ItemListChats);

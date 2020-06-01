@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { User } from '../react-app-env';
 import styled from 'styled-components';
 
@@ -20,7 +20,7 @@ const StyledDiv = styled.div`
   }
 `;
 
-export default function ProfileCard({ user }: Props) {
+function ProfileCard({ user }: Props) {
   return (
     <StyledDiv className='p-2 bg-primary'>
       <div className='rounded-circle border'>
@@ -33,3 +33,5 @@ export default function ProfileCard({ user }: Props) {
     </StyledDiv>
   );
 };
+
+export default memo(ProfileCard);

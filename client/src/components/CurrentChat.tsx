@@ -1,16 +1,13 @@
-import React, { useContext, useState, useCallback, useRef } from 'react';
-import { Chat, Message } from '../react-app-env';
+import React, { useState, useCallback, memo, useEffect } from 'react';
+import { Chat, Message, State, User } from '../react-app-env';
 import styled from 'styled-components';
 import ProfileCard from './ProfileCard';
-import { UserContext, SocketContext, TokenContext } from '../context';
 import ListMessages from './ListMessages';
 import MessageBox from './MessageBox';
+import { useSelector } from 'react-redux';
+import axios from 'axios';
 
-interface Props {
-  currentChat: Chat;
-}
-
-const StyledDiv = styled.div`
+const CurrentChatStyled = styled.div`
   height: 100%;
   display: grid;
   grid-template-rows: auto 1fr auto;
@@ -28,36 +25,45 @@ const StyledDiv = styled.div`
   }
 `;
 
-export default function CurrentChat({ currentChat }: Props) {
-  const { user } = useContext(UserContext);
-  const socket = useContext(SocketContext);
-  const { token } = useContext(TokenContext);
+function CurrentChat() {
+  const token = useSelector((state: State) => state.token) as string;
+  const user = useSelector((state: State) => state.user) as User;
+  const currentChat = useSelector((state: State) => state.current.chat) as Chat;
   const [messages, setMessages] = useState<Message[]>(currentChat.room.messages || []);
-  const listMessagesRef = useRef<HTMLDivElement>(null);
 
-
-  const handleSendMessage = useCallback((value: string) => {
+  const handleSendMessage = useCallback(async (value: string) => {
     const message: Message = {
       content: value,
       date: new Date(),
-      from: user?._id as string,
+      from: user._id as string,
       to: currentChat.user._id,
       room: currentChat.room._id
     };
 
-    socket?.emit('sendMessage', { token, message }, (response: Message) => {
-      setMessages([...messages, response]);
-    });
+    try {
+      const response = await axios.post('/messages', message, { headers: { authorization: token } });
+      setMessages([...messages, response.data]);
+    }
 
-  }, [user, currentChat, token, messages, socket]);
+    catch (error) {
+      console.error(error);
+    }
+
+  }, [user, currentChat, token]);
+
+  useEffect(() => {
+    setMessages(currentChat.room.messages);
+  }, [currentChat]);
 
   return (
-    <StyledDiv className="col-9">
+    <CurrentChatStyled className="col-9">
       <div className="shadow-sm">
         <ProfileCard user={currentChat.user} />
       </div>
-      <ListMessages messages={messages}/>
+      <ListMessages messages={messages} />
       <MessageBox handleSendMessage={handleSendMessage} />
-    </StyledDiv>
+    </CurrentChatStyled>
   );
 }
+
+export default memo(CurrentChat);

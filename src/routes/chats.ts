@@ -24,16 +24,34 @@ router.get('/', authToken, async (req, res) => {
 
 router.post('/', authToken, async (req, res) => {
   try {
-    const room = new Room();
-    await room.save();
+    const users = [res.locals.user._id, req.body.user];
 
-    const chat = new Chat({ user: req.body.user, room: room._id });
-    await chat.save();
+    let room = await Room.findOne({ users: { $in: users } });
 
-    await User.findByIdAndUpdate(res.locals.user._id, { $push: { chats: chat._id } });
-    const user = await User.findById(req.body.user, 'avatar username');
+    let chat = await Chat
+      .findOne({ room: room?._id, user: req.body.user })
+      .populate('room')
+      .populate({
+        path: 'user',
+        select: 'avatar username'
+      });
 
-    res.send({ _id: chat._id, room, user });
+    if (!room) {
+      room = new Room({ users });
+      await room.save();
+    }
+
+    if (!chat) {
+      chat = new Chat({ user: req.body.user, room: room._id });
+      await chat.save();
+
+      await User.findByIdAndUpdate(res.locals.user._id, { $push: { chats: chat._id } });
+      const user = await User.findById(req.body.user, 'avatar username');
+
+      return res.send({ _id: chat._id, room, user });
+    }
+
+    res.send(chat);
   }
 
   catch (error) {

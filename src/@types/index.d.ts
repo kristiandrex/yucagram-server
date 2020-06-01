@@ -14,17 +14,18 @@ export interface ChatI extends Document {
     username: string;
     avatar: string;
   },
-  room: {
-    _id: Types.ObjectId;
-    updatedAt: Date;
-    messages: MessageI[]
-  }
+  room: RoomI
 }
-
 export interface MessageI extends Document {
   from: Types.ObjectId;
   to: Types.ObjectId,
   content: string,
   date: Date,
   room: Types.ObjectId
+}
+
+export interface RoomI extends Document {
+  updatedAt: Date;
+  messages: MessageI[];
+  users: Types.ObjectId[];
 }

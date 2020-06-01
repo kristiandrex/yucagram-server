@@ -1,29 +1,45 @@
-import React, { useContext, SetStateAction, Dispatch } from 'react';
-import { User, Chat } from '../react-app-env';
+import React from 'react';
+import { User, State, ActionI } from '../react-app-env';
 import ProfileCard from './ProfileCard';
 import styled from 'styled-components';
-import { SocketContext, TokenContext } from '../context';
-
-interface Props {
-  currentUser: User;
-  setCurrentChat: Dispatch<SetStateAction<Chat | null>>;
-}
+import { useSelector, useDispatch } from 'react-redux';
+import axios from 'axios';
+import { Dispatch } from 'redux';
 
 const StyledDiv = styled.div`
   display: grid;
   grid-template-rows: auto 1fr;
 `;
 
-export default function CurrentUser({ currentUser }: Props) {
-  const { token } = useContext(TokenContext);
-  const socket = useContext(SocketContext);
+export default function CurrentUser() {
+  const { currentUser, token } = useSelector((state: State) => {
+    return {
+      currentUser: state.current.user as User,
+      token: state.token as string
+    }
+  });
+
+  const dispatch = useDispatch<Dispatch<ActionI>>();
 
   const handleClick = async () => {
-    socket?.emit('addChat', { token, userID: currentUser._id }, (response: Chat) => {
 
-      console.log(response);
+    try {
+      const response = await axios.post('/chats', { user: currentUser._id }, { headers: { authorization: token } });
 
-    });
+      dispatch({
+        type: 'SET_CURRENT_CHAT',
+        payload: response.data
+      });
+
+      dispatch({
+        type: 'ADD_CHAT',
+        payload: response.data
+      });
+    }
+
+    catch (error) {
+      console.error(error);
+    }
   };
 
   return (

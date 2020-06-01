@@ -1,11 +1,11 @@
-import React, { useContext } from 'react';
+import React, { memo } from 'react';
 import ProfileCard from './ProfileCard';
-import { UserContext } from '../context';
-import { User } from '../react-app-env';
+import { User, State } from '../react-app-env';
 import styled from 'styled-components';
-import WrapperChats from './WrapperChats';
+import ChatsContainer from './ChatsContainer';
+import { useSelector } from 'react-redux';
 
-const StyledDiv = styled.div`
+const LateralSectionStyled = styled.div`
   height: 100%;
   overflow-y: auto;
   display: grid;
@@ -13,15 +13,15 @@ const StyledDiv = styled.div`
   background: #fff;
 `;
 
-export default function LateralSection() {
-  const { user } = useContext(UserContext);
+function LateralSection() {
+  const user = useSelector((state: State) => state.user);
 
   return (
-    <StyledDiv className="col-3 border-right">
+    <LateralSectionStyled className="col-3 border-right">
       <ProfileCard user={user as User} />
-      <WrapperChats />
-    </StyledDiv>
+      <ChatsContainer />
+    </LateralSectionStyled>
   );
 }
 
-
+export default memo(LateralSection);

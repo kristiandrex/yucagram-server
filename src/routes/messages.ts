@@ -6,12 +6,16 @@ import authToken from '../middlewares/authToken';
 const router: Router = Router();
 
 router.post('/', authToken, async (req, res) => {
-  const message = new Message(req.body.message);
-  await message.save();
+  try {
+    const message = new Message(req.body);
+    await message.save();
 
-  await Room.findByIdAndUpdate(message.room, { $push: { messages: message._id } });
+    await Room.findByIdAndUpdate(message.room, { $push: { messages: message._id } });
 
-  res.send(message);
+    res.send(message);
+  } catch (error) {
+    console.error(error);
+  }
 });
 
 export default router;

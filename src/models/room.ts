@@ -1,4 +1,5 @@
 import { Schema, model, Types } from 'mongoose';
+import { RoomI } from '../@types';
 
 const schema = new Schema({
   messages: [
@@ -6,7 +7,16 @@ const schema = new Schema({
       type: Types.ObjectId,
       ref: 'Message'
     }
-  ]
+  ],
+  users: {
+    required: true,
+    type: [
+      {
+        type: Types.ObjectId,
+        ref: 'User'
+      }
+    ]
+  }
 }, { timestamps: true });
 
-export default model('Room', schema);
+export default model<RoomI>('Room', schema);

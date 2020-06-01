@@ -1,19 +1,21 @@
-import React, { useContext, memo } from 'react';
-import { User } from '../react-app-env';
-import { CurrentUserContext, CurrentChatContext } from '../context';
+import React, { memo, useCallback } from 'react';
+import { User, ActionI } from '../react-app-env';
+import { useDispatch } from 'react-redux';
+import { Dispatch } from 'redux';
 
 interface Props {
   user: User;
 }
 
 function ItemListUsers({ user }: Props) {
-  const setCurrentUser = useContext(CurrentUserContext);
-  const setCurrentChat = useContext(CurrentChatContext);
+  const dispatch = useDispatch<Dispatch<ActionI>>();
 
-  const handleClick = () => {
-    setCurrentUser(user);
-    setCurrentChat(null);
-  }
+  const handleClick = useCallback(() => {
+    dispatch({
+      type: 'SET_CURRENT_USER',
+      payload: user
+    });
+  }, [dispatch, user]);
 
   return (
     <div

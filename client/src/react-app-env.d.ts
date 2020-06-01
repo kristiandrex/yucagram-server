@@ -2,6 +2,7 @@
 /// <reference types="react" />
 
 import { Dispatch, SetStateAction, Context } from "react";
+import { Action } from "redux";
 
 export interface AlertProps {
   message: string;
@@ -35,31 +36,30 @@ export interface Message {
   date: Date;
 }
 
-export interface UserCTX {
-  user: User | null;
-  setUser: Dispatch<SetStateAction<User | null>>;
-}
-
-export interface TokenCTX {
-  token: string | null;
-  setToken: (value: string) => void;
-  removeToken: () => void;
-}
-
-export type CurrentUserCTX = Dispatch<SetStateAction<User | null>>;
-
-export type CurrentChatCTX = Dispatch<SetStateAction<Chat | null>>;
-
-
 export interface ResultsType {
   users: User[];
   chats: Chat[];
 }
-
-export type SetCurrentChatType = Dispatch<SetStateAction<CurrentChatType>>;
 
 export type SetSearchingType = Dispatch<SetStateAction<boolean>>;
 
 export type SetResultsType = Dispatch<SetStateAction<ResultsType>>;
 
 export type UseTokenType = [string | null, (value: string) => void, () => void];
+
+export interface State {
+  chats: Chat[];
+  user: User | null;
+  token: string | null;
+  current: Current;
+}
+
+export interface ActionI extends Action {
+  type: string;
+  payload: any;
+}
+
+export interface Current {
+  chat: Chat | null;
+  user: User | null;
+}
