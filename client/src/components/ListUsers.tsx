@@ -1,4 +1,4 @@
-import React, { Fragment, memo } from 'react';
+import React, { Fragment } from 'react';
 import { User } from '../react-app-env';
 import ItemListUsers from './ItemListUsers';
 
@@ -6,7 +6,7 @@ interface Props {
   users: User[];
 }
 
- function ListUsers({ users }: Props) {
+export default function ListUsers({ users }: Props) {
   return (
     <Fragment>
       {
@@ -15,5 +15,3 @@ interface Props {
     </Fragment>
   );
 }
-
-export default memo(ListUsers);

@@ -1,11 +1,12 @@
 import React from 'react';
-import Container from './Container';
-import io from 'socket.io-client';
-
-export const socket = io('/');
+import { Provider } from 'react-redux';
+import store from '../redux/store';
+import Socket from './Socket';
 
 export default function Root() {
   return (
-    <Container />
+    <Provider store={store}>
+      <Socket/>
+    </Provider>
   );
 }

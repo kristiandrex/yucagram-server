@@ -1,8 +1,7 @@
 /// <reference types="react-scripts" />
 /// <reference types="react" />
 
-import { Dispatch, SetStateAction, Context } from "react";
-import { Action } from "redux";
+import { Action, Dispatch } from "redux";
 
 export interface AlertProps {
   message: string;
@@ -20,11 +19,15 @@ export interface User {
 export interface Chat {
   _id: string;
   user: User;
-  room: {
-    _id: string;
-    messages: Message[];
-    updatedAt: Date;
-  }
+  room: Room;
+  index: number;
+  unread: number;
+}
+
+export interface Room {
+  _id: string;
+  messages: Message[];
+  updatedAt: Date;
 }
 
 export interface Message {
@@ -33,7 +36,7 @@ export interface Message {
   to: string;
   room: string;
   content: string;
-  date: Date;
+  date: string;
 }
 
 export interface ResultsType {
@@ -41,17 +44,13 @@ export interface ResultsType {
   chats: Chat[];
 }
 
-export type SetSearchingType = Dispatch<SetStateAction<boolean>>;
-
-export type SetResultsType = Dispatch<SetStateAction<ResultsType>>;
-
-export type UseTokenType = [string | null, (value: string) => void, () => void];
-
 export interface State {
   chats: Chat[];
   user: User | null;
   token: string | null;
   current: Current;
+  results: ResultsType;
+  searching: boolean;
 }
 
 export interface ActionI extends Action {
@@ -63,3 +62,5 @@ export interface Current {
   chat: Chat | null;
   user: User | null;
 }
+
+export type DispatchI = Dispatch<ActionI>;

@@ -1,13 +1,12 @@
-import React, { memo } from 'react';
-import { ResultsType } from '../react-app-env';
+import React from 'react';
+import { ResultsType, State } from '../react-app-env';
 import ListUsers from './ListUsers';
 import ListChats from './ListChats';
+import { useSelector } from 'react-redux';
 
-interface Props {
-  results: ResultsType;
-}
+export default function ListResults() {
+  const results: ResultsType = useSelector((state: State) => state.results);
 
-function ListResults({ results }: Props) {
   return (
     <div>
       {
@@ -25,5 +24,3 @@ function ListResults({ results }: Props) {
     </div>
   );
 }
-
-export default memo(ListResults);

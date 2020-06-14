@@ -14,11 +14,11 @@ const LateralSectionStyled = styled.div`
 `;
 
 function LateralSection() {
-  const user = useSelector((state: State) => state.user);
+  const user = useSelector<State, User>((state) => state.user as User);
 
   return (
     <LateralSectionStyled className="col-3 border-right">
-      <ProfileCard user={user as User} />
+      <ProfileCard user={user} />
       <ChatsContainer />
     </LateralSectionStyled>
   );

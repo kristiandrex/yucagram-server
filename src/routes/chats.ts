@@ -4,6 +4,7 @@ import User from '../models/user';
 import Room from '../models/room';
 import authToken from '../middlewares/authToken';
 import { ChatI } from '../@types';
+import { Types } from 'mongoose';
 
 const router = Router();
 
@@ -24,9 +25,9 @@ router.get('/', authToken, async (req, res) => {
 
 router.post('/', authToken, async (req, res) => {
   try {
-    const users = [res.locals.user._id, req.body.user];
+    const users = [Types.ObjectId(res.locals.user._id), Types.ObjectId(req.body.user)];
 
-    let room = await Room.findOne({ users: { $in: users } });
+    let room = await Room.findOne({ users: { $all: users } });
 
     let chat = await Chat
       .findOne({ room: room?._id, user: req.body.user })
@@ -55,6 +56,7 @@ router.post('/', authToken, async (req, res) => {
   }
 
   catch (error) {
+    console.error(error);
     res.sendStatus(500);
   }
 });

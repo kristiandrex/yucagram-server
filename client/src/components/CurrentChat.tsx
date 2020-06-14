@@ -1,11 +1,11 @@
-import React, { useState, useCallback, memo, useEffect } from 'react';
-import { Chat, Message, State, User } from '../react-app-env';
+import React, { useEffect } from 'react';
+import { Chat, Message, State, User, DispatchI } from '../react-app-env';
 import styled from 'styled-components';
 import ProfileCard from './ProfileCard';
 import ListMessages from './ListMessages';
 import MessageBox from './MessageBox';
-import { useSelector } from 'react-redux';
-import axios from 'axios';
+import { useSelector, useDispatch } from 'react-redux';
+import { socket } from './Socket';
 
 const CurrentChatStyled = styled.div`
   height: 100%;
@@ -25,45 +25,51 @@ const CurrentChatStyled = styled.div`
   }
 `;
 
-function CurrentChat() {
-  const token = useSelector((state: State) => state.token) as string;
-  const user = useSelector((state: State) => state.user) as User;
-  const currentChat = useSelector((state: State) => state.current.chat) as Chat;
-  const [messages, setMessages] = useState<Message[]>(currentChat.room.messages || []);
+export default function CurrentChat() {
+  const user = useSelector<State>((state) => state.user) as User;
+  const current = useSelector<State>((state) => state.current.chat) as Chat;
 
-  const handleSendMessage = useCallback(async (value: string) => {
+  const dispatch = useDispatch<DispatchI>();
+
+  const handleSendMessage = async (value: string) => {
     const message: Message = {
       content: value,
-      date: new Date(),
+      date: new Date().toString(),
       from: user._id as string,
-      to: currentChat.user._id,
-      room: currentChat.room._id
+      to: current.user._id,
+      room: current.room._id
     };
 
+
     try {
-      const response = await axios.post('/messages', message, { headers: { authorization: token } });
-      setMessages([...messages, response.data]);
+      socket.emit('SEND_MESSAGE', message, (response: Message) => {
+        dispatch({
+          type: 'ADD_CURRENT_MESSAGE',
+          payload: {
+            message: response,
+            index: current.index
+          }
+        });
+      });
     }
 
     catch (error) {
       console.error(error);
     }
 
-  }, [user, currentChat, token]);
+  }
 
   useEffect(() => {
-    setMessages(currentChat.room.messages);
-  }, [currentChat]);
+    socket.emit('OPEN_CHAT', current._id);
+  }, [current.room.messages, current._id]);
 
   return (
     <CurrentChatStyled className="col-9">
       <div className="shadow-sm">
-        <ProfileCard user={currentChat.user} />
+        <ProfileCard user={current.user} />
       </div>
-      <ListMessages messages={messages} />
+      <ListMessages messages={current.room.messages} />
       <MessageBox handleSendMessage={handleSendMessage} />
     </CurrentChatStyled>
   );
 }
-
-export default memo(CurrentChat);

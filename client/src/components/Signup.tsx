@@ -27,12 +27,12 @@ export default function Signup(props: Props) {
       
       dispatch({
         type: 'SET_TOKEN',
-        payload: response.data.user
+        payload: response.data.token
       });
 
       dispatch({
         type: 'SET_USER',
-        payload: response.data.token
+        payload: response.data.user
       });
     }
 

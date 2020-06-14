@@ -11,6 +11,10 @@ const schema = new Schema({
     type: Types.ObjectId,
     ref: 'Room',
     required: true
+  },
+  unread: {
+    type: Number,
+    default: 0
   }
 }, { timestamps: true });
 

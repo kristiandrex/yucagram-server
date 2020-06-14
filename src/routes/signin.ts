@@ -53,7 +53,6 @@ router.get('/token', async (req, res) => {
       return res.sendStatus(400);
     }
 
-    user.chats.sort((a, b) => b.room.updatedAt.getTime() - a.room.updatedAt.getTime());
     res.send(user);
   }
 

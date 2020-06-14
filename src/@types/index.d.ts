@@ -9,13 +9,11 @@ export interface UserI extends Document {
 }
 
 export interface ChatI extends Document {
-  user: {
-    _id: Types.ObjectId;
-    username: string;
-    avatar: string;
-  },
-  room: RoomI
+  user: UserI,
+  room: RoomI,
+  unread: number
 }
+
 export interface MessageI extends Document {
   from: Types.ObjectId;
   to: Types.ObjectId,

@@ -4,7 +4,7 @@ import Loading from './Loading';
 import axios from 'axios';
 import { State } from '../react-app-env';
 import { useDispatch, useSelector } from 'react-redux';
-import { socket } from './Root';
+import { socket } from './Socket';
 import Session from './Session';
 
 export default function App() {
@@ -17,11 +17,16 @@ export default function App() {
     try {
       const response = await axios.get(`/signin/token`, { headers: { authorization: token } });
 
-      socket.emit('signin', token);
+      socket.emit('SIGNIN', token);
 
       dispatch({
         type: 'SET_USER',
         payload: response.data
+      });
+
+      dispatch({
+        type: 'SET_CHATS',
+        payload: response.data.chats
       });
     }
 
@@ -34,7 +39,7 @@ export default function App() {
     if (!user && token !== null) {
       signin();
     }
-  }, [user, token]);
+  }, [user, token, signin]);
 
   if (!user && token !== null)
     return <Loading />;
