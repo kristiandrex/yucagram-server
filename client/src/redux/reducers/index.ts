@@ -1,4 +1,4 @@
-import { State, ActionI } from "../../react-app-env";
+import { State, ActionI, Chat } from "../../react-app-env";
 import sortChats from "../helpers/sortChats";
 
 const initial: State = {
@@ -35,17 +35,48 @@ export default function reducer(state: State = initial, action: ActionI): State 
       }
     }
 
+    case 'SIGNIN': {
+      window.localStorage.setItem('token', action.payload.token);
+
+      return {
+        ...state,
+        token: action.payload.token,
+        user: action.payload.user,
+        chats: action.payload.user.chats
+      }
+    }
+
+    case 'SIGNOUT': {
+      window.localStorage.removeItem('token');
+
+      return {
+        ...initial,
+        token: null
+      }
+    }
+
     case 'SET_CURRENT_CHAT': {
-      const chats = state.chats.slice();
-      chats[action.payload.index].unread = 0;
+      let chats: Chat[] = state.chats;
+
+      const index: number = action.payload.index;
+
+      if(chats[index].unread > 0) {
+        chats = state.chats.slice();
+        chats[index].unread = 0;
+      }
 
       return {
         ...state,
         current: {
           user: null,
-          chat: action.payload
+          chat: action.payload.chat
         },
-        chats
+        chats,
+        searching: false,
+        results: {
+          chats: [],
+          users: []
+        }
       };
     }
 
@@ -55,8 +86,23 @@ export default function reducer(state: State = initial, action: ActionI): State 
         current: {
           user: action.payload,
           chat: null
+        },
+        searching: false,
+        results: {
+          chats: [],
+          users: []
         }
       };
+    }
+
+    case 'CLOSE_CURRENT': {
+      return {
+        ...state,
+        current: {
+          user: null,
+          chat: null
+        }
+      }
     }
 
     case 'ADD_CHAT': {
@@ -78,6 +124,17 @@ export default function reducer(state: State = initial, action: ActionI): State 
         ...state,
         results: action.payload.results,
         searching: action.payload.searching
+      };
+    }
+
+    case 'CLEAR_RESULTS': {
+      return {
+        ...state,
+        searching: false,
+        results: {
+          users: [],
+          chats: []
+        }
       };
     }
 

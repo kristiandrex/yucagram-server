@@ -5,9 +5,9 @@ import ListResults from './ListResults';
 import { Chat, State } from '../react-app-env';
 import { useSelector } from 'react-redux';
 
-export default function ChatsContainer() {
-  const chats: Chat[] = useSelector((state: State) => state.chats);
-  const searching: boolean = useSelector((state: State) => state.searching);
+export default function Chats() {
+  const chats: Chat[] = useSelector<State, Chat[]>((state) => state.chats);
+  const searching: boolean = useSelector<State, boolean>((state) => state.searching);
 
   return (
     <Fragment>

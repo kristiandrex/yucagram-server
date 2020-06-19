@@ -55,7 +55,7 @@ export interface State {
 
 export interface ActionI extends Action {
   type: string;
-  payload: any;
+  payload?: any;
 }
 
 export interface Current {

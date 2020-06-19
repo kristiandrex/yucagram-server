@@ -59,9 +59,7 @@ export default function ItemListChats({ chat, index }: Props) {
 
     dispatch({
       type: 'SET_CURRENT_CHAT',
-      payload: {
-        ...chat, index
-      }
+      payload: { chat, index }
     });
   };
 

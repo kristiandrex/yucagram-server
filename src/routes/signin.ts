@@ -9,7 +9,22 @@ const router = Router();
 
 router.post('/', async (req, res) => {
   try {
-    const user = <UserI>await User.findOne({ username: req.body.username });
+    const user = <UserI>await User
+      .findOne({ username: req.body.username })
+      .populate({
+        path: 'chats',
+        populate: {
+          path: 'user',
+          select: 'username avatar'
+        }
+      })
+      .populate({
+        path: 'chats',
+        populate: {
+          path: 'room',
+          populate: 'messages'
+        }
+      });
 
     if (!user || !bcrypt.compareSync(req.body.password, user.password)) {
       return res.sendStatus(400);

@@ -1,34 +1,16 @@
 import React from 'react';
 import LateralSection from './LateralSection';
-import { State } from '../react-app-env';
-import CurrentUser from './CurrentUser';
-import CurrentChat from './CurrentChat';
-import styled from 'styled-components';
+import { State, Current } from '../react-app-env';
 import { useSelector } from 'react-redux';
-
-const SessionStyled = styled.main`
-  height: 100vh;
-  overflow: hidden;
-`;
+import CurrentLayout from './CurrentLayout';
 
 export default function Session() {
-  const currentUser = useSelector((state: State) => state.current.user);
-  const currentChat = useSelector((state: State) => state.current.chat);
-
-  let current = null;
-
-  if (currentUser !== null) {
-    current = <CurrentUser />;
-  }
-
-  if (currentChat !== null) {
-    current = <CurrentChat />
-  }
+  const current = useSelector<State, Current>((state) => state.current);
 
   return (
-    <SessionStyled className="row no-gutters">
+    <div className="row no-gutters h-100">
       <LateralSection />
-      {current}
-    </SessionStyled>
+      {current.user !== null || current.chat !== null ? <CurrentLayout/> : null }
+    </div>
   )
 }

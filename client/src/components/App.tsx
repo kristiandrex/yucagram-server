@@ -23,11 +23,6 @@ export default function App() {
         type: 'SET_USER',
         payload: response.data
       });
-
-      dispatch({
-        type: 'SET_CHATS',
-        payload: response.data.chats
-      });
     }
 
     catch (error) {

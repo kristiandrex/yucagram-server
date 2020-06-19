@@ -1,39 +1,28 @@
 import React from 'react';
-import { User, State, ActionI } from '../react-app-env';
-import ProfileCard from './ProfileCard';
-import styled from 'styled-components';
+import { User, State, DispatchI } from '../react-app-env';
 import { useSelector, useDispatch } from 'react-redux';
 import axios from 'axios';
-import { Dispatch } from 'redux';
-
-const StyledDiv = styled.div`
-  display: grid;
-  grid-template-rows: auto 1fr;
-`;
 
 export default function CurrentUser() {
-  const { currentUser, token } = useSelector((state: State) => {
-    return {
-      currentUser: state.current.user as User,
-      token: state.token as string
-    }
-  });
-
-  const dispatch = useDispatch<Dispatch<ActionI>>();
+  const token = useSelector<State, string>((state) => state.token as string);
+  const current = useSelector<State, User>((state) => state.current.user as User);
+  const dispatch = useDispatch<DispatchI>();
 
   const handleClick = async () => {
-
     try {
-      const response = await axios.post('/chats', { user: currentUser._id }, { headers: { authorization: token } });
-
-      dispatch({
-        type: 'SET_CURRENT_CHAT',
-        payload: response.data
-      });
+      const response = await axios.post('/chats', { user: current._id }, { headers: { authorization: token } });
 
       dispatch({
         type: 'ADD_CHAT',
         payload: response.data
+      });
+
+      dispatch({
+        type: 'SET_CURRENT_CHAT',
+        payload: {
+          chat: response.data,
+          index: 0
+        }
       });
     }
 
@@ -43,9 +32,8 @@ export default function CurrentUser() {
   };
 
   return (
-    <StyledDiv className="col-9">
-      <ProfileCard user={currentUser} />
-      <div className="d-flex align-items-center justify-content-center">
+    <div className="row no-gutters current-user">
+      <div className="col-10 offset-1 align-items-center d-flex justify-content-center">
         <div className="card text-center shadow-sm">
           <div className="card-header bg-white">
             <h4>¿Quieres agregar este chat?</h4>
@@ -55,6 +43,7 @@ export default function CurrentUser() {
           </div>
         </div>
       </div>
-    </StyledDiv>
+    </div>
   );
 }
+
