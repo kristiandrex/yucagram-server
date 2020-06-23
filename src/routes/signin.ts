@@ -3,7 +3,8 @@ import User from '../models/user';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { Types } from 'mongoose';
-import { UserI } from '../@types';
+import { UserI, ChatI } from '../@types';
+import Chat from '../models/chat';
 
 const router = Router();
 
@@ -21,8 +22,7 @@ router.post('/', async (req, res) => {
       .populate({
         path: 'chats',
         populate: {
-          path: 'room',
-          populate: 'messages'
+          path: 'messages'
         }
       });
 
@@ -46,28 +46,23 @@ router.get('/token', async (req, res) => {
     const token = req.headers.authorization;
     const decoded: string = <string>jwt.verify(<string>token, <string>process.env.SEED);
     const _id: Types.ObjectId = Types.ObjectId(decoded);
-
-    const user = <UserI>await User
-      .findById(_id)
-      .populate({
-        path: 'chats',
-        populate: {
-          path: 'user',
-          select: 'username avatar'
-        }
-      })
-      .populate({
-        path: 'chats',
-        populate: {
-          path: 'room',
-          populate: 'messages'
-        }
-      });
+    
+    const user = <UserI>await User.findById(_id);
 
     if (!user) {
       return res.sendStatus(400);
     }
 
+    const chats = <ChatI[]>await Chat
+      .find({ owner: _id })
+      .populate({
+        path: 'user',
+        select: 'username avatar'
+      })
+      .populate('messages')
+      .sort('-updatedAt');
+
+    user.chats = chats;
     res.send(user);
   }
 

@@ -6,26 +6,28 @@ const schema = new Schema({
   username: {
     type: String,
     unique: true,
-    required: true
+    required: [true, 'El nombre de usuario es obligatorio']
   },
   email: {
     type: String,
     unique: true,
-    required: true
+    required: [true, 'El correo es obligatorio']
   },
   password: {
     type: String,
-    required: true
+    required: [true, 'La constraseña es obligatoria']
   },
   avatar: {
     type: String,
     default:
       'https://res.cloudinary.com/kristiantorrex/image/upload/v1587258574/undraw_male_avatar_323b_gukmtl.svg'
   },
-  chats: [{
-    type: Types.ObjectId,
-    ref: 'Chat'
-  }]
+  chats: [
+    {
+      type: Types.ObjectId,
+      ref: 'Chat'
+    }
+  ]
 });
 
 schema.plugin(uniqueValidator);

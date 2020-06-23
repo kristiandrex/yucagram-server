@@ -1,13 +1,13 @@
 import store from '../store';
-import { Message, Chat, ActionI, State } from '../../react-app-env';
+import { Message, ActionI, State, Chat } from '../../react-app-env';
 import axios from 'axios';
 
 export default async function newMessage(message: Message): Promise<ActionI> {
     const state: State = store.getState();
 
-    const index: number = state.chats.findIndex(chat => chat.room._id === message.room);
+    const index: number = state.chats.findIndex(chat => chat.user._id === message.from);
 
-    if (state.current.chat !== null && state.current.chat.room._id === message.room) {
+    if (state.current.chat !== null && state.current.chat.user._id === message.from) {
         return {
             type: 'ADD_CURRENT_MESSAGE',
             payload: {
@@ -18,20 +18,19 @@ export default async function newMessage(message: Message): Promise<ActionI> {
     }
 
     if (index === -1) {
-        const response = await axios.post<Chat>('/chats', { user: message.from }, { headers: { Authorization: state.token } });
-
-        const chat = response.data;
-        chat.room.messages.push(message);
+        const response = await axios.get<Chat>(`/chats/${message.to}/${message.from}`, {
+            headers: { Authorization: state.token }
+        });
 
         return {
             type: 'ADD_CHAT',
-            payload: chat
+            payload: response.data
         }
     }
 
     return {
         type: 'ADD_MESSAGE',
-        payload: { 
+        payload: {
             message,
             index
         }

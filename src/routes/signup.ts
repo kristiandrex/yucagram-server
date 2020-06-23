@@ -11,7 +11,7 @@ router.post('/', async (req, res) => {
 
     const salt = await bcrypt.genSalt();
     const password = bcrypt.hashSync(body.password, salt);
-    
+
     body.password = password;
 
     const user = new User(req.body);
@@ -19,10 +19,10 @@ router.post('/', async (req, res) => {
     const token = jwt.sign(user._id.toString(), <string>process.env.SEED);
 
     res.send({ token });
-  } 
-  
+  }
+
   catch (error) {
-    res.send(error);
+    res.status(400).send(error);
   }
 });
 

@@ -19,22 +19,16 @@ export interface User {
 export interface Chat {
   _id: string;
   user: User;
-  room: Room;
+  owner: string;
+  messages: Message[]
   index: number;
   unread: number;
-}
-
-export interface Room {
-  _id: string;
-  messages: Message[];
-  updatedAt: Date;
 }
 
 export interface Message {
   _id?: string;
   from: string;
   to: string;
-  room: string;
   content: string;
   date: string;
 }
@@ -64,3 +58,8 @@ export interface Current {
 }
 
 export type DispatchI = Dispatch<ActionI>;
+
+export interface ValidateI {
+  error: boolean;
+  message?: string;
+}

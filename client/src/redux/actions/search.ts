@@ -3,6 +3,8 @@ import { Chat, State } from '../../react-app-env';
 import axios from 'axios';
 
 export default async function search(value: string) {
+    const state: State = store.getState();
+
     const initial = {
         results: {
             chats: [],
@@ -18,10 +20,9 @@ export default async function search(value: string) {
         }
     }
 
-    const state: State = store.getState();
-
     const chats: Chat[] = state.chats.filter(chat => chat.user.username.includes(value));
     const ignore: string[] = chats.map(chat => chat.user.username);
+    ignore.push(state.user?.username as string);
 
     try {
         const response = await axios.post('/search/', { value, ignore }, { headers: { authorization: state.token } });

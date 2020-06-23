@@ -2,16 +2,22 @@ import { model, Schema, Types } from 'mongoose';
 import { ChatI } from '../@types';
 
 const schema = new Schema({
+  owner: {
+    type: Types.ObjectId,
+    ref: 'User',
+    required: true
+  },
   user: {
     type: Types.ObjectId,
     ref: 'User',
     required: true
   },
-  room: {
-    type: Types.ObjectId,
-    ref: 'Room',
-    required: true
-  },
+  messages: [
+    {
+      type: Types.ObjectId,
+      ref: 'Message'
+    }
+  ],
   unread: {
     type: Number,
     default: 0

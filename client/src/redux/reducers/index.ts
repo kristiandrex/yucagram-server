@@ -60,7 +60,7 @@ export default function reducer(state: State = initial, action: ActionI): State 
 
       const index: number = action.payload.index;
 
-      if(chats[index].unread > 0) {
+      if (chats[index].unread > 0) {
         chats = state.chats.slice();
         chats[index].unread = 0;
       }
@@ -69,14 +69,9 @@ export default function reducer(state: State = initial, action: ActionI): State 
         ...state,
         current: {
           user: null,
-          chat: action.payload.chat
+          chat: action.payload
         },
-        chats,
-        searching: false,
-        results: {
-          chats: [],
-          users: []
-        }
+        chats
       };
     }
 
@@ -86,11 +81,6 @@ export default function reducer(state: State = initial, action: ActionI): State 
         current: {
           user: action.payload,
           chat: null
-        },
-        searching: false,
-        results: {
-          chats: [],
-          users: []
         }
       };
     }
@@ -115,7 +105,8 @@ export default function reducer(state: State = initial, action: ActionI): State 
         chats: [
           action.payload,
           ...state.chats
-        ]
+        ],
+        searching: false
       };
     }
 
@@ -162,7 +153,22 @@ export default function reducer(state: State = initial, action: ActionI): State 
       }
     }
 
-    default:
+    case 'DELETE_CHAT': {
+      const chats = state.chats.slice();
+      chats.splice(action.payload, 1);
+
+      return {
+        ...state,
+        chats,
+        current: {
+          chat: null,
+          user: null
+        }
+      }
+    }
+
+    default: {
       return state;
+    }
   }
 }

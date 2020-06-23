@@ -5,6 +5,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { State, Current, User, DispatchI } from '../react-app-env';
 import CurrentChat from './CurrentChat';
 import CurrentUser from './CurrentUser';
+import deleteChat from '../redux/actions/deleteChat';
+import Dropdown from 'react-bootstrap/Dropdown';
 
 const StyledCurrentLayout = styled.div`
     display: grid;
@@ -46,11 +48,34 @@ export default function CurrentLayout() {
         dispatch({ type: 'CLOSE_CURRENT' });
     }, [dispatch]);
 
+    const handleDelete = useCallback(() => {
+        deleteChat(current.chat?._id, current.chat?.index)
+            .then(response => dispatch(response))
+            .catch(error => console.error(error));
+    }, [current.chat, dispatch])
+
     return (
         <StyledCurrentLayout className="col-12 col-lg-9 col-sm-8 current-layout h-100">
             <div className="shadow-sm profile-bar bg-primary">
                 <i className="material-icons text-white d-sm-none pl-2" onClick={handleClose}>arrow_back</i>
-                <ProfileCard user={current.user || current.chat?.user as User} />
+                <div className="dropdown">
+                    <ProfileCard user={current.user || current.chat?.user as User}>
+                        <Dropdown className="no-outline">
+                            <Dropdown.Toggle 
+                                id={current.chat?._id as string} 
+                                className="text-white"
+                                variant="link"
+                            >
+                                <span className="material-icons">more_vert</span>
+                            </Dropdown.Toggle>
+                            <Dropdown.Menu className="text-center">
+                                <Dropdown.Item onClick={handleDelete}>
+                                    Eliminar chat
+                                </Dropdown.Item>
+                            </Dropdown.Menu>
+                        </Dropdown>
+                    </ProfileCard>
+                </div>
             </div>
             {current.user !== null ? <CurrentUser /> : <CurrentChat />}
         </StyledCurrentLayout>

@@ -1,15 +1,16 @@
-import React, { memo, MouseEvent, useState, useCallback } from 'react';
+import React, { memo, useCallback } from 'react';
 import ProfileCard from './ProfileCard';
 import { User, State, Current, DispatchI } from '../react-app-env';
 import styled from 'styled-components';
 import Chats from './Chats';
 import { useSelector, useDispatch } from 'react-redux';
+import Dropdown from 'react-bootstrap/Dropdown'
 
-interface Props {
+interface StyledProps {
   current: Current
 }
 
-const LateralSectionStyled = styled.div<Props>`
+const LateralSectionStyled = styled.div<StyledProps>`
   height: 100%;
   overflow-y: auto;
   display: grid;
@@ -20,41 +21,13 @@ const LateralSectionStyled = styled.div<Props>`
     border: none !important;
     display: ${props => props.current.user !== null || props.current.chat !== null ? 'none' : 'grid'};
   }
-
-  .dropdown .dropdown-menu {
-    right: 0.5rem;
-    left: unset;
-
-    .dropdown-item {
-      cursor: pointer;
-      text-align: center;
-    }
-  }
 `;
 
 function LateralSection() {
   const user = useSelector<State, User>((state) => state.user as User);
   const current = useSelector<State, Current>((state) => state.current);
+
   const dispatch = useDispatch<DispatchI>();
-
-  const [state, setState] = useState<boolean>(false);
-
-  const handleClick = (event: MouseEvent<HTMLDivElement>) => {
-    const target: HTMLElement = event.target as HTMLElement;
-    const classList: DOMTokenList = target.classList;
-
-    if (state) {
-
-      if (!classList.contains('dropdown-menu') && !classList.contains('dropdown-item')) {
-        setState(false);
-      }
-
-    }
-  };
-
-  const handleToggle = useCallback(() => {
-    setState(!state)
-  }, [state])
 
   const handleSignout = useCallback(() => {
     dispatch({ type: 'SIGNOUT' })
@@ -64,15 +37,21 @@ function LateralSection() {
     <LateralSectionStyled
       className='col-lg-3 col-sm-4 col-12 border-right'
       current={current}
-      onClick={handleClick}
     >
-      <div className="dropdown">
-        <ProfileCard user={user} onClick={handleToggle} />
-        <div className={`dropdown-menu shadow ${state ? 'd-block' : 'd-none'}`}>
-          <div className="dropdown-item" onClick={handleSignout}>Cerrar sesión</div>
-        </div>
-      </div>
-
+      <ProfileCard user={user}>
+        <Dropdown className="no-outline">
+          <Dropdown.Toggle
+            id={user._id}
+            className="text-white"
+            variant="link"
+          >
+            <span className="material-icons">more_vert</span>
+          </Dropdown.Toggle>
+          <Dropdown.Menu className="text-center">
+            <Dropdown.Item onClick={handleSignout}>Cerrar sesión</Dropdown.Item>
+          </Dropdown.Menu>
+        </Dropdown>
+      </ProfileCard>
       <Chats />
     </LateralSectionStyled>
   );

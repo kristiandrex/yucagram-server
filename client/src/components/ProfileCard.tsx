@@ -1,10 +1,12 @@
-import React, { memo, MouseEvent } from 'react';
+import React, { memo, MouseEvent, ReactNode } from 'react';
 import { User } from '../react-app-env';
 import styled from 'styled-components';
 
 interface Props {
   user: User;
-  onClick?: (event?: MouseEvent<HTMLDivElement>) => void
+  onClick?: (event?: MouseEvent<HTMLDivElement>) => void;
+  options?: boolean;
+  children?: ReactNode;
 }
 
 const StyledDiv = styled.div`
@@ -22,19 +24,19 @@ const StyledDiv = styled.div`
 
   .btn-options {
     cursor: pointer;
+    outline: none;
   }
 `;
 
-function ProfileCard({ user, onClick }: Props) {
+function ProfileCard({ user, children }: Props) {
+
   return (
     <StyledDiv className='p-2 bg-primary profile-card'>
       <div className='rounded-circle border'>
-        <img className="avatar" src={user.avatar} alt={`Foto de ${user.username}`}/>
+        <img className="avatar" src={user.avatar} alt={`Foto de ${user.username}`} />
       </div>
       <span className='font-weight-bold'>{user.username}</span>
-      <div className='material-icons btn-options' onClick={onClick}>
-        more_vert
-      </div>
+      {children}
     </StyledDiv>
   );
 };

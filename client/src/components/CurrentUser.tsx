@@ -20,7 +20,7 @@ export default function CurrentUser() {
       dispatch({
         type: 'SET_CURRENT_CHAT',
         payload: {
-          chat: response.data,
+          ...response.data,
           index: 0
         }
       });

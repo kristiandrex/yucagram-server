@@ -24,7 +24,7 @@ export default function Signup(props: Props) {
       };
 
       const response = await axios.post('/signup/', data);
-      
+
       dispatch({
         type: 'SIGNIN',
         payload: response.data

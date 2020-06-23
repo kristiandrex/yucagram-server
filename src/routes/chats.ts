@@ -1,10 +1,8 @@
 import { Router } from 'express';
 import Chat from '../models/chat';
 import User from '../models/user';
-import Room from '../models/room';
 import authToken from '../middlewares/authToken';
-import { ChatI } from '../@types';
-import { Types } from 'mongoose';
+import { UserI, ChatI } from '../@types';
 
 const router = Router();
 
@@ -15,49 +13,60 @@ router.get('/', authToken, async (req, res) => {
       path: 'user',
       select: 'username avatar'
     })
-    .populate({
-      path: 'room',
-      populate: 'messages'
-    });
+    .populate('messages');
 
   res.send(chats);
 });
 
+router.get('/:owner/:user', authToken, async (req, res) => {
+  const chat = <ChatI>await Chat
+    .findOne({ owner: req.params.owner, user: req.params.user as any })
+    .populate({
+      path: 'user',
+      select: 'username avatar'
+    })
+    .populate('messages');
+
+  res.send(chat);
+});
+
 router.post('/', authToken, async (req, res) => {
   try {
-    const users = [Types.ObjectId(res.locals.user._id), Types.ObjectId(req.body.user)];
-
-    let room = await Room.findOne({ users: { $all: users } });
-
     let chat = await Chat
-      .findOne({ room: room?._id, user: req.body.user })
-      .populate('room')
+      .findOne({ user: req.body.user, owner: res.locals.user._id })
       .populate({
         path: 'user',
         select: 'avatar username'
       });
 
-    if (!room) {
-      room = new Room({ users });
-      await room.save();
-    }
+    if (chat === null) {
+      const user = <UserI>await User.findById(req.body.user, 'avatar username');
 
-    if (!chat) {
-      chat = new Chat({ user: req.body.user, room: room._id });
+      chat = new Chat({ user: req.body.user, owner: res.locals.user._id });
+      chat.user = user;
+
       await chat.save();
-
-      await User.findByIdAndUpdate(res.locals.user._id, { $push: { chats: chat._id } });
-      const user = await User.findById(req.body.user, 'avatar username');
-
-      return res.send({ _id: chat._id, room, user });
     }
 
+    await User.findByIdAndUpdate(res.locals.user._id, { $push: { chats: chat?._id } });
     res.send(chat);
   }
 
   catch (error) {
     console.error(error);
     res.sendStatus(500);
+  }
+});
+
+router.delete('/:_id', authToken, async (req, res) => {
+  try {
+    await Chat.findByIdAndDelete(req.params._id);
+    res.sendStatus(200);
+  }
+
+  catch (error) {
+    console.error(error);
+    res.sendStatus(500)
   }
 });
 

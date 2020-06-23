@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback, Fragment } from 'react';
 import { Chat, Message, State, User, DispatchI } from '../react-app-env';
 import ListMessages from './ListMessages';
 import MessageBox from './MessageBox';
@@ -18,7 +18,6 @@ export default function CurrentChat() {
       date: new Date().toString(),
       from: user._id as string,
       to: current.user._id,
-      room: current.room._id
     };
 
     try {
@@ -42,12 +41,12 @@ export default function CurrentChat() {
 
   useEffect(() => {
     socket.emit('OPEN_CHAT', current._id);
-  }, [current.room.messages, current._id]);
+  }, [current.messages, current._id]);
 
   return (
-    <>
-      <ListMessages messages={current.room.messages} />
+    <Fragment>
+      <ListMessages messages={current.messages} />
       <MessageBox handleSendMessage={handleSendMessage} />
-    </>
+    </Fragment>
   );
 }

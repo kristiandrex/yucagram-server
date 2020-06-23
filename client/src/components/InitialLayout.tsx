@@ -17,18 +17,18 @@ export default function InitialLayout() {
                   onClick={() => setState(!state)}
                 >
                   Regístrate
-                  </div>
+                </div>
               </Signin>
             ) : (
-                <Signup>
-                  <div
-                    className='btn btn-link btn-sm btn-block'
-                    onClick={() => setState(!state)}
-                  >
-                    Inicia sesión
-                  </div>
-                </Signup>
-              )}
+              <Signup>
+                <div
+                  className='btn btn-link btn-sm btn-block mt-2'
+                  onClick={() => setState(!state)}
+                >
+                  Inicia sesión
+                </div>
+              </Signup>
+            )}
           </div>
         </div>
       </div>

@@ -9,21 +9,15 @@ export interface UserI extends Document {
 }
 
 export interface ChatI extends Document {
-  user: UserI,
-  room: RoomI,
-  unread: number
+  owner: Types.ObjectId;
+  user: UserI | Types.ObjectId;
+  messages: MessageI[];
+  unread: number;
 }
 
 export interface MessageI extends Document {
   from: Types.ObjectId;
-  to: Types.ObjectId,
-  content: string,
-  date: Date,
-  room: Types.ObjectId
-}
-
-export interface RoomI extends Document {
-  updatedAt: Date;
-  messages: MessageI[];
-  users: Types.ObjectId[];
+  to: Types.ObjectId;
+  content: string;
+  date: Date;
 }
