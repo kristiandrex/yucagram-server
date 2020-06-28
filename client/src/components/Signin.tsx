@@ -1,65 +1,101 @@
-import React, { FormEvent, ReactElement, useRef } from 'react';
+import React, { ReactElement, useState } from 'react';
+import { Formik } from 'formik';
 import axios from 'axios';
 import { useDispatch } from 'react-redux';
+import { DispatchI } from '../react-app-env';
 
 interface Props {
   children: ReactElement;
 }
 
-export default function Signin(props: Props) {
-  const usernameRef = useRef<HTMLInputElement>(null);
-  const passwordRef = useRef<HTMLInputElement>(null);
+interface Error {
+  username?: string;
+  password?: string;
+}
 
-  const dispatch = useDispatch();
-
-  const handleSubmit = async (event: FormEvent) => {
-    event.preventDefault();
-
-    const data = {
-      username: usernameRef.current?.value,
-      password: passwordRef.current?.value
-    };
-
-    try {
-      const response = await axios.post('/signin', data);
-
-      dispatch({
-        type: 'SIGNIN',
-        payload: response.data
-      });
-
-    } catch (error) {
-      console.log(error)
-    }
-  };
+export default function Signin({ children }: Props) {
+  const [error, setError] = useState<boolean>(false);
+  const dispatch = useDispatch<DispatchI>();
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div className='form-group'>
-        <input
-          type='text'
-          className='form-control'
-          placeholder='Nombre de usuario'
-          name='username'
-          ref={usernameRef}
-        />
-      </div>
-      <div className='form-group'>
-        <input
-          type='password'
-          className='form-control'
-          placeholder='Contraseña'
-          name='password'
-          ref={passwordRef}
-        />
-      </div>
-      <button className='btn btn-primary btn-block'>Iniciar sesión</button>
-      <div className='btn-group btn-block'>
-        <button type='button' className='btn btn-link btn-sm'>
-          ¿Olvidaste la contraseña?
-        </button>
-        {props.children}
-      </div>
-    </form>
+    <Formik
+      initialValues={{
+        username: '',
+        password: ''
+      }}
+      onSubmit={async (values) => {
+        try {
+          const response = await axios.post('/signin', values);
+
+          dispatch({
+            type: 'SIGNIN',
+            payload: response.data
+          });
+        }
+
+        catch (error) {
+          setError(true);
+          console.log(error)
+        }
+      }}
+      validate={(values) => {
+        const errors: Error = {};
+
+        if (!values.username) {
+          errors.username = "Este campo es requerido";
+        }
+
+        if (!values.password) {
+          errors.password = "Este campo es requerido";
+        }
+
+        return errors;
+      }}
+    >
+      {
+        ({ handleChange, handleSubmit, errors, touched, isSubmitting }) => (
+          <form onSubmit={handleSubmit}>
+            {error && (
+              <div className="alert alert-danger text-center">
+                Nombre de usuario y/o contraseña incorrectos
+              </div>
+            )}
+            <div className='form-group'>
+              <input
+                type='text'
+                className={errors.username && touched.username ? 'form-control is-invalid' : 'form-control'}
+                placeholder='Nombre de usuario'
+                name='username'
+                onChange={handleChange}
+              />
+              {errors.username && touched.username && <div className="invalid-feedback">{errors.username}</div>}
+            </div>
+            <div className='form-group'>
+              <input
+                type='password'
+                className={errors.password && touched.username ? 'form-control is-invalid' : 'form-control'}
+                placeholder='Contraseña'
+                name='password'
+                onChange={handleChange}
+              />
+              {errors.password && touched.password && <div className="invalid-feedback">{errors.password}</div>}
+            </div>
+            <button
+              className='btn btn-primary btn-block'
+              type='submit'
+              disabled={isSubmitting}
+            >
+              Iniciar sesión
+            </button>
+            <div className='btn-group btn-block mt-3'>
+              <button type='button' className='btn btn-link btn-sm'>
+                ¿Olvidaste la contraseña?
+              </button>
+              {children}
+            </div>
+          </form>
+        )
+      }
+    </Formik>
   );
 }

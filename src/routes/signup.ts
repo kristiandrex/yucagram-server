@@ -18,7 +18,7 @@ router.post('/', async (req, res) => {
     await user.save();
     const token = jwt.sign(user._id.toString(), <string>process.env.SEED);
 
-    res.send({ token });
+    res.send({ token, user });
   }
 
   catch (error) {

@@ -12,19 +12,13 @@ export default function InitialLayout() {
           <div className='card-body shadow-sm'>
             {state ? (
               <Signin>
-                <div
-                  className='btn btn-link btn-sm'
-                  onClick={() => setState(!state)}
-                >
+                <div className='btn btn-link btn-sm' onClick={() => setState(!state)}>
                   Regístrate
                 </div>
               </Signin>
             ) : (
               <Signup>
-                <div
-                  className='btn btn-link btn-sm btn-block mt-2'
-                  onClick={() => setState(!state)}
-                >
+                <div className='btn btn-link btn-sm btn-block mt-3' onClick={() => setState(!state)}>
                   Inicia sesión
                 </div>
               </Signup>
