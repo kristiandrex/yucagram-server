@@ -7,6 +7,7 @@ import { connect } from 'mongoose';
 import routes from './routes/index';
 import io from './services/socket';
 import cors from 'cors';
+import path from 'path';
 
 const app = express();
 
@@ -15,6 +16,14 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cors({ origin: '/', allowedHeaders: 'Authorization' }));
 app.use(express.static('public'));
 app.use(routes);
+
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static('client/build'));
+
+  app.get('/', (req, res) => {
+    res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
+  });
+}
 
 const server = createServer(app);
 
