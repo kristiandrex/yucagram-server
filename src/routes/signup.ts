@@ -7,15 +7,14 @@ const router = Router();
 
 router.post('/', async (req, res) => {
   try {
-    let body = req.body;
+    const { username, email } = req.body;
 
     const salt = await bcrypt.genSalt();
-    const password = bcrypt.hashSync(body.password, salt);
+    const password = bcrypt.hashSync(req.body.password, salt);
 
-    body.password = password;
-
-    const user = new User(req.body);
+    const user = new User({ username, email, password });
     await user.save();
+    
     const token = jwt.sign(user._id.toString(), <string>process.env.SEED);
 
     res.send({ token, user });

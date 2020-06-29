@@ -5,7 +5,6 @@ import MessageBox from './MessageBox';
 import { useSelector, useDispatch } from 'react-redux';
 import { socket } from './Socket';
 
-
 export default function CurrentChat() {
   const user = useSelector<State>((state) => state.user) as User;
   const current = useSelector<State>((state) => state.current.chat) as Chat;

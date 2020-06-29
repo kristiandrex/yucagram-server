@@ -37,6 +37,7 @@ const StyledCurrentLayout = styled.div`
 
     .messages-box {
         grid-area: bottom;
+        background-color: #f8f9fa;
     }
 `;
 
@@ -61,8 +62,8 @@ export default function CurrentLayout() {
                 <div className="dropdown">
                     <ProfileCard user={current.user || current.chat?.user as User}>
                         <Dropdown className="no-outline">
-                            <Dropdown.Toggle 
-                                id={current.chat?._id as string} 
+                            <Dropdown.Toggle
+                                id={current.chat?._id as string}
                                 className="text-white"
                                 variant="link"
                             >

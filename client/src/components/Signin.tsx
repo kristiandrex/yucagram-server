@@ -35,7 +35,6 @@ export default function Signin({ children }: Props) {
 
         catch (error) {
           setError(true);
-          console.log(error)
         }
       }}
       validate={(values) => {

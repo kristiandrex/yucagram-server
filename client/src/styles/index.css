@@ -31,17 +31,3 @@ body {
 .search-bar.active button {
   display: block;
 }
-
-.modal {
-  display: flex !important;
-  align-items: center;
-  justify-content: center;
-}
-
-.modal img {
-  max-height: 70vh;
-}
-
-.modal .modal-footer {
-  justify-content: center;
-}

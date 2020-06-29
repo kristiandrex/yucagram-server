@@ -49,14 +49,24 @@ export default function Signup(props: Props) {
         }
       }}
       validate={(values) => {
+        const regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+
         const errors: Fields = {};
 
         if (!values.username) {
           errors.username = "Este campo es requerido";
         }
 
+        else if (values.username.includes(' ')) {
+          errors.username = "No debe contener espacios";
+        }
+
         if (!values.email) {
           errors.email = "Este campo es requerido";
+        }
+
+        else if (!regex.test(values.email)) {
+          errors.email = "El correo no es válido";
         }
 
         if (!values.password) {
@@ -82,7 +92,11 @@ export default function Signup(props: Props) {
                   className={errors.username && touched.username ? "form-control is-invalid" : "form-control"}
                   onChange={handleChange}
                 />
-                {errors.username && touched.username && (<div className="invalid-feedback">{errors.username}</div>)}
+                {errors.username && touched.username ? (
+                  <div className="invalid-feedback">{errors.username}</div>
+                ) : (
+                  <small className="text-muted form-text mt-2">No debe contener espacios</small>
+                )}
               </div>
               <div className='form-group'>
                 <input
