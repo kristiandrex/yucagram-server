@@ -19,6 +19,10 @@ export default function MessageBox({ handleSendMessage }: Props) {
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
 
+    if (value.trim.length === 0) {
+      return;
+    }
+
     handleSendMessage(value);
     setValue('');
   };
@@ -29,7 +33,7 @@ export default function MessageBox({ handleSendMessage }: Props) {
 
   return (
     <StyledMessageBox className="messages-box p-2 border-top">
-      <form 
+      <form
         className="d-flex align-items-center"
         onSubmit={handleSubmit}
       >

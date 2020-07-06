@@ -27,7 +27,11 @@ const schema = new Schema({
       type: Types.ObjectId,
       ref: 'Chat'
     }
-  ]
+  ],
+  new: {
+    type: Boolean,
+    default: true
+  }
 });
 
 schema.plugin(uniqueValidator);

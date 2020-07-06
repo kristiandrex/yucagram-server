@@ -17,7 +17,7 @@ function SearchBar() {
   const [value, setValue] = useState<string>('');
   const dispatch = useDispatch<DispatchI>();
 
-  const searching: boolean = useSelector<State>(state => state.searching) as boolean;
+  const searching: boolean = useSelector<State, boolean>(state => state.results.searching);
 
   const handleSearch = async (event: ChangeEvent<HTMLInputElement>) => {
     setValue(event.target.value);

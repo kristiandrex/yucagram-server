@@ -1,6 +1,5 @@
 import { model, Schema, Types } from 'mongoose';
 import { ChatI } from '../@types';
-import uniqueValidator from 'mongoose-unique-validator';
 
 const schema = new Schema({
   owner: {
@@ -24,7 +23,5 @@ const schema = new Schema({
     default: 0
   }
 }, { timestamps: true });
-
-schema.plugin(uniqueValidator, { message: 'unique' });
 
 export default model<ChatI>('Chat', schema);

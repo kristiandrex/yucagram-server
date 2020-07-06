@@ -5,12 +5,16 @@ import axios from 'axios';
 
 export default function CurrentUser() {
   const token = useSelector<State, string>((state) => state.token as string);
-  const current = useSelector<State, User>((state) => state.current.user as User);
+  const current = useSelector<State, User>((state) => state.chats.current.user as User);
   const dispatch = useDispatch<DispatchI>();
 
   const handleClick = async () => {
     try {
       const response = await axios.post('/chats', { user: current._id }, { headers: { authorization: token } });
+
+      dispatch({
+        type: 'CLEAR_RESULTS'
+      });
 
       dispatch({
         type: 'ADD_CHAT',

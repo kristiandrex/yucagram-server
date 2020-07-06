@@ -1,64 +1,54 @@
-import React, { ReactElement, useState } from 'react';
-import { Formik } from 'formik';
+import React, { useState, Dispatch, SetStateAction } from 'react';
+import { Formik, Form } from 'formik';
 import axios from 'axios';
 import { useDispatch } from 'react-redux';
 import { DispatchI } from '../react-app-env';
+import validateSignin from '../helpers/validateSignin';
+import InvalidFeedback from './InvalidFeedback';
 
 interface Props {
-  children: ReactElement;
+  setState: Dispatch<SetStateAction<boolean>>;
+  state: boolean;
 }
 
-interface Error {
-  username?: string;
-  password?: string;
+interface Values {
+  username: string;
+  password: string;
 }
 
-export default function Signin({ children }: Props) {
+export default function Signin({ setState, state }: Props) {
   const [error, setError] = useState<boolean>(false);
   const dispatch = useDispatch<DispatchI>();
 
+  const handleOnSubmit = async (values: Values) => {
+    try {
+      const response = await axios.post('/signin', values);
+
+      dispatch({
+        type: 'SIGNIN',
+        payload: response.data
+      });
+    }
+
+    catch (error) {
+      setError(true);
+    }
+  };
+
   return (
     <Formik
-      initialValues={{
-        username: '',
-        password: ''
-      }}
-      onSubmit={async (values) => {
-        try {
-          const response = await axios.post('/signin', values);
-
-          dispatch({
-            type: 'SIGNIN',
-            payload: response.data
-          });
-        }
-
-        catch (error) {
-          setError(true);
-        }
-      }}
-      validate={(values) => {
-        const errors: Error = {};
-
-        if (!values.username) {
-          errors.username = "Este campo es requerido";
-        }
-
-        if (!values.password) {
-          errors.password = "Este campo es requerido";
-        }
-
-        return errors;
-      }}
+      initialValues={{ username: '', password: '' }}
+      onSubmit={handleOnSubmit}
+      validate={validateSignin}
     >
       {
-        ({ handleChange, handleSubmit, errors, touched, isSubmitting }) => (
-          <form onSubmit={handleSubmit}>
-            {error && (
-              <div className="alert alert-danger text-center">
-                Nombre de usuario y/o contraseña incorrectos
-              </div>
-            )}
+        ({ handleChange, errors, touched, isSubmitting }) => (
+          <Form>
+            {
+              error && (
+                <div className="alert alert-danger text-center">Nombre de usuario y/o contraseña incorrectos</div>
+              )
+            }
             <div className='form-group'>
               <input
                 type='text'
@@ -67,7 +57,10 @@ export default function Signin({ children }: Props) {
                 name='username'
                 onChange={handleChange}
               />
-              {errors.username && touched.username && <div className="invalid-feedback">{errors.username}</div>}
+              <InvalidFeedback 
+                show={(errors.username && touched.username) as boolean} 
+                message={errors.username as string} 
+              />
             </div>
             <div className='form-group'>
               <input
@@ -77,7 +70,10 @@ export default function Signin({ children }: Props) {
                 name='password'
                 onChange={handleChange}
               />
-              {errors.password && touched.password && <div className="invalid-feedback">{errors.password}</div>}
+              <InvalidFeedback 
+                show={(errors.password && touched.password) as boolean} 
+                message={errors.password as string} 
+              />
             </div>
             <button
               className='btn btn-primary btn-block'
@@ -90,9 +86,11 @@ export default function Signin({ children }: Props) {
               <button type='button' className='btn btn-link btn-sm'>
                 ¿Olvidaste la contraseña?
               </button>
-              {children}
+              <div className='btn btn-link btn-sm' onClick={() => setState(!state)}>
+                Regístrate
+              </div>
             </div>
-          </form>
+          </Form>
         )
       }
     </Formik>

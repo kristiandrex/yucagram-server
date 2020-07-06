@@ -4,10 +4,11 @@ import axios from 'axios';
 
 export default async function newMessage(message: Message): Promise<ActionI> {
     const state: State = store.getState();
+    const current = state.chats.current;
 
-    const index: number = state.chats.findIndex(chat => chat.user._id === message.from);
+    const index: number = state.chats.collection.findIndex(chat => chat.user._id === message.from);
 
-    if (state.current.chat !== null && state.current.chat.user._id === message.from) {
+    if (current.chat !== null && current.chat.user._id === message.from) {
         return {
             type: 'ADD_CURRENT_MESSAGE',
             payload: {

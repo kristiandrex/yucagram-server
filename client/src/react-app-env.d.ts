@@ -1,19 +1,15 @@
 /// <reference types="react-scripts" />
 /// <reference types="react" />
+/// <reference types="redux" />
 
 import { Action, Dispatch } from "redux";
-
-export interface AlertProps {
-  message: string;
-  type: string;
-  onClose: Function;
-}
 
 export interface User {
   _id: string;
   username: string;
   avatar: string;
   chats: Chat[];
+  new: boolean;
 }
 
 export interface Chat {
@@ -33,18 +29,22 @@ export interface Message {
   date: string;
 }
 
-export interface ResultsType {
+export interface Results {
+  searching: boolean;
   users: User[];
   chats: Chat[];
 }
 
+export interface ChatsState {
+  collection: Chat[];
+  current: Current;
+}
+
 export interface State {
-  chats: Chat[];
+  chats: ChatsState;
   user: User | null;
   token: string | null;
-  current: Current;
-  results: ResultsType;
-  searching: boolean;
+  results: Results;
 }
 
 export interface ActionI extends Action {

@@ -1,11 +1,11 @@
 import React from 'react';
-import { ResultsType, State } from '../react-app-env';
+import { Results, State } from '../react-app-env';
 import ListUsers from './ListUsers';
 import ListChats from './ListChats';
 import { useSelector } from 'react-redux';
 
 export default function ListResults() {
-  const results: ResultsType = useSelector((state: State) => state.results);
+  const results = useSelector<State, Results>((state) => state.results);
 
   return (
     <div>

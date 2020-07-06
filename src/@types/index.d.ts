@@ -6,6 +6,7 @@ export interface UserI extends Document {
   password: string;
   avatar: string;
   chats: ChatI[];
+  new: boolean;
 }
 
 export interface ChatI extends Document {

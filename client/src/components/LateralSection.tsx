@@ -19,13 +19,13 @@ const LateralSectionStyled = styled.div<StyledProps>`
 
   @media (max-width: 576px) {
     border: none !important;
-    display: ${props => props.current.user !== null || props.current.chat !== null ? 'none' : 'grid'};
+    display: ${({ current }) => current.user !== null || current.chat !== null ? 'none' : 'grid'};
   }
 `;
 
 function LateralSection() {
   const user = useSelector<State, User>((state) => state.user as User);
-  const current = useSelector<State, Current>((state) => state.current);
+  const current = useSelector<State, Current>((state) => state.chats.current);
 
   const dispatch = useDispatch<DispatchI>();
 
@@ -38,13 +38,9 @@ function LateralSection() {
       className='col-lg-3 col-sm-4 col-12 border-right'
       current={current}
     >
-      <ProfileCard user={user}>
+      <ProfileCard avatar={user.avatar} username={user.username}>
         <Dropdown className="no-outline">
-          <Dropdown.Toggle
-            id={user._id}
-            className="text-white"
-            variant="link"
-          >
+          <Dropdown.Toggle id={user._id} className="text-white" variant="link">
             <span className="material-icons">more_vert</span>
           </Dropdown.Toggle>
           <Dropdown.Menu className="text-center">

@@ -1,6 +1,11 @@
 import { Chat, Message } from "../../react-app-env";
 
-export default function sortChats(chats: Chat[], index: number, message: Message) {
+interface Payload {
+    index: number,
+    message: Message
+}
+
+export default function addMessage(chats: Chat[], { index, message }: Payload) {
     const copy = chats.slice();
 
     if (index === 0) {

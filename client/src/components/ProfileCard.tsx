@@ -1,12 +1,12 @@
 import React, { memo, MouseEvent, ReactNode } from 'react';
-import { User } from '../react-app-env';
 import styled from 'styled-components';
 
 interface Props {
-  user: User;
   onClick?: (event?: MouseEvent<HTMLDivElement>) => void;
   options?: boolean;
   children?: ReactNode;
+  avatar: string;
+  username: string;
 }
 
 const StyledDiv = styled.div`
@@ -28,14 +28,14 @@ const StyledDiv = styled.div`
   }
 `;
 
-function ProfileCard({ user, children }: Props) {
+function ProfileCard({ children, username, avatar }: Props) {
 
   return (
     <StyledDiv className='p-2 bg-primary profile-card'>
       <div className='rounded-circle border'>
-        <img className="avatar" src={user.avatar} alt={`Foto de ${user.username}`} />
+        <img className="avatar" src={avatar} alt={`Foto de ${username}`} />
       </div>
-      <span className='font-weight-bold'>{user.username}</span>
+      <span className='font-weight-bold'>{username}</span>
       {children}
     </StyledDiv>
   );

@@ -1,33 +1,9 @@
-* {
-  box-sizing: border-box !important;
-}
-
 html,
 body,
 #root {
   height: 100%;
 }
 
-body {
-  background: var(--light) !important;
-}
-
 .material-icons {
   vertical-align: middle !important;
-}
-
-.search-bar {
-  display: grid;
-}
-
-.search-bar button {
-  display: none;
-}
-
-.search-bar.active {
-  grid-template-columns: 1fr auto;
-}
-
-.search-bar.active button {
-  display: block;
 }

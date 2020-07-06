@@ -6,6 +6,14 @@ import { State } from '../react-app-env';
 import { useDispatch, useSelector } from 'react-redux';
 import { socket } from './Socket';
 import Session from './Session';
+import styled from 'styled-components';
+import pattern from '../assets/i-like-food.svg';
+
+const Styled = styled.div`
+  background-image: url(${pattern});
+  height: 100%;
+  width: 100%;
+`;
 
 export default function App() {
   const dispatch = useDispatch();
@@ -39,8 +47,9 @@ export default function App() {
   if (!user && token !== null)
     return <Loading />;
 
-  if (!token)
-    return <InitialLayout />;
-
-  return <Session />;
+  return (
+    <Styled>
+      {!token ? <InitialLayout /> : <Session />}
+    </Styled>
+  );
 }

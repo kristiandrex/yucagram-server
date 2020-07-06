@@ -1,89 +1,59 @@
-import React, { ReactElement, Fragment } from 'react';
+import React, { Fragment, Dispatch, SetStateAction } from 'react';
 import axios from 'axios';
 import { useDispatch } from 'react-redux';
-import { Formik } from 'formik';
+import { Formik, FormikHelpers, Form } from 'formik';
 import { DispatchI } from '../react-app-env';
+import validateSignup from '../helpers/validateSignup';
+import InvalidFeedback from './InvalidFeedback';
+import FormFeedback from './FormFeedback';
 
 interface Props {
-  children: ReactElement;
+  setState: Dispatch<SetStateAction<boolean>>;
+  state: boolean;
 }
 
-interface Fields {
-  username?: string;
-  email?: string;
-  password?: string;
+interface Values {
+  username: string;
+  email: string;
+  password: string;
 }
 
-export default function Signup(props: Props) {
+export default function Signup({ setState, state }: Props) {
   const dispatch = useDispatch<DispatchI>();
+
+  const handleOnSubmit = async (values: Values, { setFieldError }: FormikHelpers<Values>) => {
+    try {
+      const response = await axios.post('/signup', values);
+
+      dispatch({
+        type: 'SIGNIN',
+        payload: response.data
+      });
+    }
+
+    catch (error) {
+      const errors = error.response.data.errors;
+
+      if (errors.username) {
+        setFieldError('username', 'Nombre de usuario no disponible');
+      }
+
+      if (errors.email) {
+        setFieldError('email', 'Este correo ya está en uso');
+      }
+    }
+  }
 
   return (
     <Formik
-      initialValues={{
-        username: '',
-        email: '',
-        password: ''
-      }}
-      onSubmit={async (values, { setFieldError }) => {
-        try {
-          const response = await axios.post('/signup', values);
-
-          dispatch({
-            type: 'SIGNIN',
-            payload: response.data
-          });
-        }
-
-        catch (error) {
-          if (error.response.status === 400) {
-            const errors = error.response.data.errors;
-
-            if (errors.username) {
-              setFieldError('username', 'Nombre de usuario no disponible');
-            }
-
-            if (errors.email) {
-              setFieldError('email', 'Este correo ya está en uso');
-            }
-          }
-        }
-      }}
-      validate={(values) => {
-        const regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-
-        const errors: Fields = {};
-
-        if (!values.username) {
-          errors.username = "Este campo es requerido";
-        }
-
-        else if (values.username.includes(' ')) {
-          errors.username = "No debe contener espacios";
-        }
-
-        if (!values.email) {
-          errors.email = "Este campo es requerido";
-        }
-
-        else if (!regex.test(values.email)) {
-          errors.email = "El correo no es válido";
-        }
-
-        if (!values.password) {
-          errors.password = "Este campo es requerido";
-        }
-
-        else if (values.password.length < 8) {
-          errors.password = "Debe tener al menos 8 caracteres";
-        }
-
-        return errors;
-      }}
+      initialValues={{ username: '', email: '', password: '' }}
+      onSubmit={handleOnSubmit}
+      validate={validateSignup}
     >
       {
-        ({ handleSubmit, handleChange, errors, touched, isSubmitting }) => (
+        ({ handleChange, errors, touched, isSubmitting }) => (
           <Fragment>
-            <form onSubmit={handleSubmit} noValidate>
+            <Form noValidate>
               <div className='form-group'>
                 <input
                   type='text'
@@ -92,11 +62,11 @@ export default function Signup(props: Props) {
                   className={errors.username && touched.username ? "form-control is-invalid" : "form-control"}
                   onChange={handleChange}
                 />
-                {errors.username && touched.username ? (
-                  <div className="invalid-feedback">{errors.username}</div>
-                ) : (
-                  <small className="text-muted form-text mt-2">No debe contener espacios</small>
-                )}
+                <FormFeedback
+                  error={(errors.username && touched.username) as boolean}
+                  invalid={errors.username as string}
+                  valid="No debe contener espacios"
+                />
               </div>
               <div className='form-group'>
                 <input
@@ -106,7 +76,10 @@ export default function Signup(props: Props) {
                   className={errors.email && touched.email ? "form-control is-invalid" : "form-control"}
                   onChange={handleChange}
                 />
-                {errors.email && touched.email && (<div className="invalid-feedback">{errors.email}</div>)}
+                <InvalidFeedback
+                  show={(errors.email && touched.email) as boolean}
+                  message={errors.email as string}
+                />
               </div>
               <div className='form-group'>
                 <input
@@ -116,11 +89,11 @@ export default function Signup(props: Props) {
                   className={errors.password && touched.password ? "form-control is-invalid" : "form-control"}
                   onChange={handleChange}
                 />
-                {errors.password && touched.password ? (
-                  <div className="invalid-feedback mt-2">{errors.password}</div>
-                ) : (
-                  <small className="text-muted form-text mt-2">Debe tener al menos 8 caracteres</small>
-                )}
+                <FormFeedback
+                  error={(errors.password && touched.password) as boolean}
+                  invalid={errors.password as string}
+                  valid="Debe tener al menos 8 caracteres"
+                />
               </div>
               <button
                 className='btn btn-primary btn-block'
@@ -129,8 +102,10 @@ export default function Signup(props: Props) {
               >
                 Regístrate
               </button>
-            </form>
-            {props.children}
+            </Form>
+            <div className='btn btn-link btn-sm btn-block mt-3' onClick={() => setState(!state)}>
+              Inicia sesión
+            </div>
           </Fragment>
         )
       }

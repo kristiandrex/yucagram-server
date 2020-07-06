@@ -6,8 +6,8 @@ import { Chat, State } from '../react-app-env';
 import { useSelector } from 'react-redux';
 
 export default function Chats() {
-  const chats: Chat[] = useSelector<State, Chat[]>((state) => state.chats);
-  const searching: boolean = useSelector<State, boolean>((state) => state.searching);
+  const chats: Chat[] = useSelector<State, Chat[]>((state) => state.chats.collection);
+  const searching: boolean = useSelector<State, boolean>((state) => state.results.searching);
 
   return (
     <Fragment>

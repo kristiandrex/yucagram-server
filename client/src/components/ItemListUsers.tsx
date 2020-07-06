@@ -30,6 +30,7 @@ function ItemListUsers({ user }: Props) {
           alt={`Foto de ${user.username}`}
           height='47px'
           width='47px'
+          className="rounded-circle"
         />
       </div>
       <span className='ml-2 font-weight-bold'>{user.username}</span>

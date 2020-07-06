@@ -7,7 +7,7 @@ import { socket } from './Socket';
 
 export default function CurrentChat() {
   const user = useSelector<State>((state) => state.user) as User;
-  const current = useSelector<State>((state) => state.current.chat) as Chat;
+  const current = useSelector<State>((state) => state.chats.current.chat) as Chat;
 
   const dispatch = useDispatch<DispatchI>();
 

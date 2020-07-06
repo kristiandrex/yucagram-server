@@ -10,19 +10,9 @@ export default function InitialLayout() {
       <div className='col-10 col-md-4 col-lg-3 d-flex align-items-center'>
         <div className='card w-100'>
           <div className='card-body shadow-sm'>
-            {state ? (
-              <Signin>
-                <div className='btn btn-link btn-sm' onClick={() => setState(!state)}>
-                  Regístrate
-                </div>
-              </Signin>
-            ) : (
-              <Signup>
-                <div className='btn btn-link btn-sm btn-block mt-3' onClick={() => setState(!state)}>
-                  Inicia sesión
-                </div>
-              </Signup>
-            )}
+            {
+              state ? <Signin state={state} setState={setState} /> : <Signup state={state} setState={setState} />
+            }
           </div>
         </div>
       </div>
