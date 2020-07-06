@@ -18,7 +18,10 @@ export default function reducer(state: ChatState = initialState, action: ActionI
     switch (action.type) {
         case 'SET_USER': {
             return {
-                ...state,
+                current: {
+                    chat: null,
+                    user: null
+                },
                 collection: action.payload.chats
             };
         }

@@ -92,8 +92,6 @@ export default function ProfileChooser({ user }: Props) {
 		try {
 			const response = await axios.put('/users/avatar', { avatar: src }, { headers: { authorization: token } });
 
-			console.log(response.data);
-
 			dispatch({
 				type: 'SET_USER',
 				payload: response.data.user

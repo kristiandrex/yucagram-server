@@ -34,6 +34,8 @@ export default function App() {
     }
 
     catch (error) {
+      dispatch({ type: 'SIGNOUT' });
+
       console.error(error);
     }
   }, [token, dispatch]);
