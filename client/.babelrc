@@ -1,0 +1,34 @@
+{
+	"presets": [
+		"@babel/preset-env",
+		"@babel/preset-react"
+	],
+	"plugins": [
+		[
+			"babel-plugin-styled-components",
+			{
+				"pure": true
+			}
+		],
+		"@babel/plugin-transform-runtime"
+	],
+	"env": {
+		"production": {
+			"plugins": [
+				[
+					"transform-react-remove-prop-types",
+					{
+						"ignoreFilenames": [
+							"node_modules"
+						]
+					}
+				]
+			]
+		},
+		"development": {
+			"plugins": [
+				"react-refresh/babel"
+			]
+		}
+	}
+}

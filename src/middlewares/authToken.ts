@@ -4,21 +4,21 @@ import User from '../models/user';
 import { UserI } from '../@types';
 
 export default async function authToken(req: Request, res: Response, next: NextFunction) {
-  try {
-    const _id = jwt.verify(<string>req.headers.authorization, <string>process.env.SEED);
-    const user: UserI = <UserI>await User.findOne({ _id });
+	try {
+		const _id = jwt.verify(<string>req.headers.authorization, <string>process.env.SEED);
+		const user: UserI = <UserI>await User.findOne({ _id });
 
-    if (!user) {
-      return res.sendStatus(400);
-    }
+		if (!user) {
+			return res.sendStatus(400);
+		}
 
-    res.locals.user = user;
+		res.locals.user = user;
 
-    next();
-  }
+		next();
+	}
 
-  catch (error) {
-    console.error(error);
-    res.sendStatus(400);
-  }
+	catch (error) {
+		console.error(error);
+		res.sendStatus(400);
+	}
 }

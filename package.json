@@ -1,7 +1,7 @@
 {
 	"name": "chat-mern",
 	"version": "1.0.0",
-	"description": "",
+	"description": "Chat created with Typescript and MERN Stack.",
 	"main": "src/index.js",
 	"scripts": {
 		"dev": "nodemon src/index.ts -e ts --ignore client --exec ts-node",

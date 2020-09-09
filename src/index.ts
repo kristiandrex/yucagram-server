@@ -1,13 +1,13 @@
 import dotenv from 'dotenv';
-dotenv.config();
-
 import express from 'express';
-import { createServer } from 'http';
 import { connect } from 'mongoose';
-import routes from './routes/index';
-import io from './services/socket';
+import { createServer } from 'http';
 import cors from 'cors';
 import path from 'path';
+import io from './services/socket';
+import routes from './routes/index';
+
+dotenv.config();
 
 const app = express();
 
@@ -15,29 +15,29 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cors({ origin: '/', allowedHeaders: 'Authorization' }));
 app.use(express.static('public'));
-app.use(routes);
+app.use('/api', routes);
 
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static('client/build'));
+if (process.env.NODE_ENV === 'production') {
+	app.use(express.static(path.join(__dirname, 'client/build')));
 
-  app.get('/', (req, res) => {
-    res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
-  });
+	app.get('/', (req, res) => {
+		res.sendFile(path.join(__dirname, 'client/build.html'));
+	});
 }
 
 const server = createServer(app);
 
-app.set('socket', io(server));
+io.connect(server);
 
 server.listen(process.env.PORT, () => {
-  console.log('Server on port', process.env.PORT);
+	console.log('Server on port', process.env.PORT);
 });
 
 connect(<string>process.env.MONGO, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  useCreateIndex: true,
-  useFindAndModify: false
+	useNewUrlParser: true,
+	useUnifiedTopology: true,
+	useCreateIndex: true,
+	useFindAndModify: false
 })
-  .then(() => console.log('Connected to MongoDB'))
-  .catch((error) => console.error(error));
+	.then(() => console.log('Connected to MongoDB'))
+	.catch((error) => console.error(error));
