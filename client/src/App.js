@@ -4,9 +4,9 @@ import store from './redux/store';
 import Router from './router';
 
 export default function App() {
-	return (
-		<Provider store={store}>
-			<Router />
-		</Provider>
-	)
+  return (
+    <Provider store={store}>
+      <Router />
+    </Provider>
+  );
 } 

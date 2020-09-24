@@ -1,44 +1,47 @@
 {
-	"env": {
-		"node": true,
-		"browser": true,
-		"es6": true
-	},
-	"extends": [
-		"eslint:recommended",
-		"plugin:react/recommended",
-		"plugin:react-hooks/recommended"
-	],
-	"plugins": [
-		"react"
-	],
-	"parserOptions": {
-		"ecmaFeatures": {
-			"jsx": true
-		},
-		"sourceType": "module",
-		"ecmaVersion": 2020
-	},
-	"rules": {
-		"no-unused-vars": "warn",
-		"react/prop-types": "warn",
-		"react-hooks/rules-of-hooks": "warn",
-		"react-hooks/exhaustive-deps": "warn",
-		"no-extra-semi": "warn",
-		"quotes": [
-			"warn",
-			"single"
-		],
-		"jsx-quotes": [
-			"warn",
-			"prefer-single"
-		],
-		"no-mixed-spaces-and-tabs": "warn",
-		"indent": ["error", "tab"]
-	},
-	"settings": {
-		"react": {
-			"version": "detect"
-		}
-	}
+  "env": {
+    "node": true,
+    "browser": true,
+    "es6": true
+  },
+  "extends": [
+    "eslint:recommended",
+    "plugin:react/recommended",
+    "plugin:react-hooks/recommended"
+  ],
+  "plugins": [
+    "react"
+  ],
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "sourceType": "module",
+    "ecmaVersion": 2020
+  },
+  "rules": {
+    "semi": ["warn", "always"],
+    "no-constant-condition": "warn",
+    "no-unused-vars": "warn",
+    "react/prop-types": "warn",
+    "react-hooks/rules-of-hooks": "warn",
+    "react-hooks/exhaustive-deps": "warn",
+    "no-extra-semi": "warn",
+    "quotes": [
+      "warn",
+      "single"
+    ],
+    "jsx-quotes": [
+      "warn",
+      "prefer-single"
+    ],
+    "no-mixed-spaces-and-tabs": "warn",
+    "indent": ["warn", 2, { "SwitchCase": 1 }],
+    "react/display-name": "off"
+  },
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  }
 }

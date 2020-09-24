@@ -3,41 +3,35 @@ import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import Lateral from './Lateral/Lateral';
 import CurrentLayout from './Current/CurrentLayout';
-import ProfileChooser from './Profile/ProfileChooser';
-import Socket from './Socket';
+import InitialAvatar from './Profile/InitialAvatar';
 
 const StyledSession = styled.div`
   .no-outline {
-	outline: none;
+    outline: none;
   }
 
   .dropdown-toggle {
-	&::after {
-	  display: none;
-	}
-  }
+    outline: none;
+    box-shadow: none;
+    color: #212529;
 
-  .dropdown {
-	.dropdown-toggle {
-		outline: none;
-		box-shadow: none;
-		color: #212529;
-	}
+    &::after {
+      display: none;
+    }
   }
 `;
+
 export default function Screen() {
-	const user = useSelector((state) => state.auth.user);
+  const isNew = useSelector((state) => state.auth.user.new);
 
-	if (user.new) {
-		return <ProfileChooser user={user} />;
-	}
+  if (isNew) {
+    return <InitialAvatar />;
+  }
 
-	return (
-		<Socket>
-			<StyledSession className='row no-gutters h-100'>
-				<Lateral />
-				<CurrentLayout />
-			</StyledSession>
-		</Socket>
-	);
+  return (
+    <StyledSession className='row no-gutters h-100'>
+      <Lateral />
+      <CurrentLayout />
+    </StyledSession>
+  );
 }

@@ -5,7 +5,7 @@ import results from './results';
 import { combineReducers } from 'redux';
 
 export default combineReducers({
-	chats,
-	results,
-	auth
+  chats,
+  results,
+  auth
 });

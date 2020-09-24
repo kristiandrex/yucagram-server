@@ -12,15 +12,17 @@
     "react-image-crop": "^8.6.4",
     "react-redux": "^7.2.0",
     "react-router-dom": "^5.2.0",
+    "react-transition-group": "^4.4.1",
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
     "socket.io-client": "^2.3.0",
     "styled-components": "^5.1.1"
   },
   "scripts": {
-    "start": "eslint . --fix && webpack-dev-server",
-    "build": "webpack --mode=production",
-    "lint": "eslint . --fix"
+    "start": "yarn lint && webpack-dev-server",
+    "build": "rimraf build && yarn lint && cross-env NODE_ENV=production webpack",
+    "lint": "eslint . --fix",
+    "lint:css": "stylelint src/**/*.js"
   },
   "devDependencies": {
     "@babel/core": "^7.11.4",
@@ -31,6 +33,7 @@
     "babel-loader": "^8.1.0",
     "babel-plugin-styled-components": "^1.11.1",
     "babel-plugin-transform-react-remove-prop-types": "^0.4.24",
+    "cross-env": "^7.0.2",
     "css-loader": "^4.2.2",
     "eslint": "^7.8.1",
     "eslint-loader": "^4.0.2",
@@ -38,9 +41,16 @@
     "eslint-plugin-react-hooks": "^4.1.0",
     "file-loader": "^6.1.0",
     "html-webpack-plugin": "^4.4.1",
+    "mini-css-extract-plugin": "^0.11.2",
+    "optimize-css-assets-webpack-plugin": "^5.0.4",
     "react-refresh": "^0.8.3",
+    "rimraf": "^3.0.2",
     "style-loader": "^1.2.1",
-    "terser-webpack-plugin": "^4.1.0",
+    "stylelint": "^13.7.1",
+    "stylelint-config-recommended": "^3.0.0",
+    "stylelint-config-styled-components": "^0.1.1",
+    "stylelint-processor-styled-components": "^1.10.0",
+    "terser-webpack-plugin": "^4.2.1",
     "webpack": "^4.44.1",
     "webpack-cli": "^3.3.12",
     "webpack-dev-server": "^3.11.0"

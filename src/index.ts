@@ -1,4 +1,6 @@
 import dotenv from 'dotenv';
+dotenv.config();
+
 import express from 'express';
 import { connect } from 'mongoose';
 import { createServer } from 'http';
@@ -6,8 +8,6 @@ import cors from 'cors';
 import path from 'path';
 import io from './services/socket';
 import routes from './routes/index';
-
-dotenv.config();
 
 const app = express();
 
@@ -18,11 +18,11 @@ app.use(express.static('public'));
 app.use('/api', routes);
 
 if (process.env.NODE_ENV === 'production') {
-	app.use(express.static(path.join(__dirname, 'client/build')));
+  app.use(express.static(path.join(__dirname, 'client/build')));
 
-	app.get('/', (req, res) => {
-		res.sendFile(path.join(__dirname, 'client/build.html'));
-	});
+  app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'client/build.html'));
+  });
 }
 
 const server = createServer(app);
@@ -30,14 +30,14 @@ const server = createServer(app);
 io.connect(server);
 
 server.listen(process.env.PORT, () => {
-	console.log('Server on port', process.env.PORT);
+  console.log('Server on port', process.env.PORT);
 });
 
 connect(<string>process.env.MONGO, {
-	useNewUrlParser: true,
-	useUnifiedTopology: true,
-	useCreateIndex: true,
-	useFindAndModify: false
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useCreateIndex: true,
+  useFindAndModify: false
 })
-	.then(() => console.log('Connected to MongoDB'))
-	.catch((error) => console.error(error));
+  .then(() => console.log('Connected to MongoDB'))
+  .catch((error) => console.error(error));
