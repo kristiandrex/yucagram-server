@@ -19,10 +19,10 @@
     "styled-components": "^5.1.1"
   },
   "scripts": {
-    "start": "yarn lint && webpack-dev-server",
-    "build": "rimraf build && yarn lint && cross-env NODE_ENV=production webpack",
+    "start": "yarn lint && yarn css && webpack-dev-server",
+    "build": "rimraf build && webpack",
     "lint": "eslint . --fix",
-    "lint:css": "stylelint src/**/*.js"
+    "css": "stylelint src/**/*.js"
   },
   "devDependencies": {
     "@babel/core": "^7.11.4",
@@ -33,7 +33,6 @@
     "babel-loader": "^8.1.0",
     "babel-plugin-styled-components": "^1.11.1",
     "babel-plugin-transform-react-remove-prop-types": "^0.4.24",
-    "cross-env": "^7.0.2",
     "css-loader": "^4.2.2",
     "eslint": "^7.8.1",
     "eslint-loader": "^4.0.2",
