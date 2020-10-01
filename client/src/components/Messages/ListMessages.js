@@ -21,7 +21,7 @@ export default function ListMessages({ messages }) {
   useEffect(() => {
     const scrollHeight = listRef.current?.scrollHeight;
     const clientHeight = listRef.current?.clientHeight;
-    listRef.current?.scrollTo(0, scrollHeight - clientHeight);
+    listRef.current.scrollTo(0, scrollHeight - clientHeight);
   }, []);
 
   useEffect(() => {

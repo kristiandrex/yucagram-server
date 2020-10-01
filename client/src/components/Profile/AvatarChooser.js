@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import Cropper from './Cropper';
-import {changeAvatar } from '../../redux/actions/auth';
+import { changeAvatar } from '../../redux/actions/auth';
 
 const StyledAvatarChooser = styled.div`
   width: 125px;
