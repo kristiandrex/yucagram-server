@@ -1,4 +1,4 @@
-import types from '../types';
+import types from 'types';
 
 const initialState = {
   searching: false,
@@ -8,7 +8,6 @@ const initialState = {
 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
-
     case types.SEARCH: {
       return action.payload;
     }

@@ -1,14 +1,14 @@
-import React, { memo, useMemo } from 'react';
+import React, { useMemo, useRef } from 'react';
 import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
-import { CSSTransition } from 'react-transition-group';
-import Profile from '../Profile/Profile';
-import ProfileBar from '../Profile/ProfileBar';
+import { CSSTransition, } from 'react-transition-group';
+import Profile from 'components/Profile/Profile';
+import ProfileBar from 'components/Profile/ProfileBar';
 import SearchBar from './SearchBar';
-import ListChats from '../Chats/ListChats';
-import ListUsers from '../Users/ListUsers';
-import ProfileOptions from '../Profile/ProfileOptions';
-import { openProfile } from '../../redux/actions/auth';
+import ListOfChats from 'components/Chats/ListOfChats';
+import ListOfUsers from 'components/Users/ListOfUsers';
+import ProfileOptions from 'components/Profile/ProfileOptions';
+import { openProfile } from 'actions/auth';
 
 const LateralSectionStyled = styled.div`
   background: #fff;
@@ -41,19 +41,17 @@ const LateralSectionStyled = styled.div`
   }
 `;
 
-function Lateral() {
+export default function Lateral() {
   const { chats, results, auth } = useSelector((state) => state);
 
   const dispatch = useDispatch();
   const handleEditProfile = () => dispatch(openProfile());
 
+  const nodeRef = useRef(null);
+
   const showUsers = useMemo(() => {
     return results.searching && results.users.length > 0;
   }, [results.searching, results.users.length]);
-
-  // const hideMobile = useMemo(() => {
-  //   return (chats.current.user !== null || chats.current.chat) !== null;
-  // }, [chats]);
 
   return (
     <LateralSectionStyled className='col-lg-3 col-sm-4 col-12 border-right' /*hideMobile={hideMobile}*/>
@@ -62,8 +60,9 @@ function Lateral() {
         timeout={300}
         classNames='profile'
         unmountOnExit
+        nodeRef={nodeRef}
       >
-        <Profile />
+        <Profile ref={nodeRef} />
       </CSSTransition>
       <ProfileBar
         avatar={auth.user.avatar}
@@ -73,13 +72,11 @@ function Lateral() {
         <ProfileOptions />
       </ProfileBar>
       <SearchBar />
-      <ListChats
+      <ListOfChats
         chats={results.searching ? results.chats : chats.collection}
         searching={results.searching}
       />
-      {showUsers && <ListUsers users={results.users} />}
+      {showUsers && <ListOfUsers users={results.users} />}
     </LateralSectionStyled>
   );
 }
-
-export default memo(Lateral);

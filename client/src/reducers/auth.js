@@ -1,4 +1,4 @@
-import types from '../types';
+import types from 'types';
 
 const initialState = {
   user: null,
@@ -13,7 +13,7 @@ export default (state = initialState, action) => {
         loading: false,
         user: {
           ...action.payload.user,
-          edit: false
+          edit: false,
         },
         token: action.payload.token
       };
@@ -40,6 +40,16 @@ export default (state = initialState, action) => {
         user: {
           ...state.user,
           avatar: action.payload,
+          new: false
+        }
+      };
+    }
+
+    case types.DEFAULT_AVATAR: {
+      return {
+        ...state,
+        user: {
+          ...state.user,
           new: false
         }
       };

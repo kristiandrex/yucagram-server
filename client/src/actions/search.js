@@ -1,5 +1,5 @@
-import axios from 'axios';
-import types from '../types';
+import types from 'types';
+import fetch from 'helpers/fetch';
 
 export default function search(value) {
   return async (dispatch, getState) => {
@@ -14,25 +14,24 @@ export default function search(value) {
     ignore.push(state.auth.user.username);
 
     try {
-      const response = await axios.post('/api/auth/search', { value, ignore }, {
-        headers: {
-          authorization: state.auth.token
-        }
-      });
-
-      dispatch({
-        type: types.SEARCH,
-        payload: {
-          chats,
-          users: response.data,
-          searching: true
-        }
-      });
+      const response = await fetch.post('/api/auth/search', { value, ignore });
+      dispatch(setSearch(chats, response.data));
     }
 
     catch (error) {
-      console.error(error);
       dispatch({ type: types.CLEAR_SEARCH });
+      console.error(error);
+    }
+  };
+}
+
+function setSearch(chats, users) {
+  return {
+    type: types.SEARCH,
+    payload: {
+      chats,
+      users,
+      searching: true
     }
   };
 }

@@ -1,8 +1,8 @@
-import React, { useState, memo, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
-import types from '../../redux/types';
-import search from '../../redux/actions/search';
+import types from 'types';
+import search from 'actions/search';
 
 const StyledSearchBar = styled.div`
   display: flex;
@@ -13,7 +13,7 @@ const StyledSearchBar = styled.div`
   }
 `;
 
-function SearchBar() {
+export default function SearchBar() {
   const [value, setValue] = useState('');
   const dispatch = useDispatch();
 
@@ -45,5 +45,3 @@ function SearchBar() {
     </StyledSearchBar>
   );
 }
-
-export default memo(SearchBar);

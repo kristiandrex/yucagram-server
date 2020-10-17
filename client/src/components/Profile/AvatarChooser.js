@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import Cropper from './Cropper';
-import { changeAvatar } from '../../redux/actions/auth';
+import { changeAvatar } from 'actions/auth';
 
 const StyledAvatarChooser = styled.div`
   width: 125px;
@@ -57,8 +57,8 @@ export default function AvatarChooser() {
 
     changeAvatar(formData)
       .then(action => {
-        dispatch(action);
         setShow(false);
+        dispatch(action);
       })
       .catch(error => console.log(error));
   };

@@ -6,7 +6,7 @@ const router = Router();
 
 router.put('/avatar', authToken, async (req, res) => {
   try {
-    await User.findByIdAndUpdate(res.locals.user._id, { avatar: req.body.avatar });
+    await User.findByIdAndUpdate(res.locals.user, { avatar: req.body.avatar });
     res.sendStatus(200);
   }
 

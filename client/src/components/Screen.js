@@ -1,9 +1,11 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
+import React, { useContext, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import Lateral from './Lateral/Lateral';
-import CurrentLayout from './Current/CurrentLayout';
 import InitialAvatar from './Profile/InitialAvatar';
+import Current from './Current/Current';
+import { SocketContext } from './Socket';
+import { addIncomingMessage, messageSeen } from 'actions/messages';
 
 const StyledSession = styled.div`
   .no-outline {
@@ -23,6 +25,12 @@ const StyledSession = styled.div`
 
 export default function Screen() {
   const isNew = useSelector((state) => state.auth.user.new);
+  const socket = useContext(SocketContext);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    socket.on('SEND_MESSAGE', (message) => dispatch(addIncomingMessage(message)));
+  }, [socket, dispatch]);
 
   if (isNew) {
     return <InitialAvatar />;
@@ -31,7 +39,7 @@ export default function Screen() {
   return (
     <StyledSession className='row no-gutters h-100'>
       <Lateral />
-      <CurrentLayout />
+      <Current />
     </StyledSession>
   );
 }

@@ -2,7 +2,7 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import AvatarChooser from './AvatarChooser';
-// import { defaultAvatar } from '../../redux/actions/auth';
+import { defaultAvatar } from 'actions/auth';
 
 const StyledChooser = styled.div`
   display: flex;
@@ -13,28 +13,28 @@ const StyledChooser = styled.div`
 
   .card.chooser {
     width: 250px;
+  }
 
-    .card-body {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+  .card-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
 
-      .card-title {
-        width: 100%;
-        padding-bottom: 1.25rem;
-        margin-bottom: 1.25rem;
+  .card-title {
+    width: 100%;
+    padding-bottom: 1.25rem;
+    margin-bottom: 1.25rem;
 
-        h4 {
-          margin-bottom: 0px;
-        }
-      }
+    h4 {
+      margin-bottom: 0px;
     }
   }
 `;
 
 export default function InitialAvatar() {
   const dispatch = useDispatch();
-  // const handleSave = () => dispatch(defaultAvatar());
+  const handleSave = () => dispatch(defaultAvatar());
 
   return (
     <StyledChooser>
@@ -44,8 +44,9 @@ export default function InitialAvatar() {
             <h4>Elige tu foto</h4>
           </div>
           <AvatarChooser />
-          <button 
-            className='btn btn-outline-primary mr-2' 
+          <button
+            className='btn btn-outline-primary mr-2'
+            onClick={handleSave}
           >
             Guardar
           </button>

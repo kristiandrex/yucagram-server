@@ -3,10 +3,10 @@ import axios from 'axios';
 import { useDispatch } from 'react-redux';
 import { Formik, Form } from 'formik';
 import { Link } from 'react-router-dom';
-import Input from '../UI/Input';
+import Input from 'components/UI/Input';
 import LoginLayout from './Layout';
-import validateSignup from '../../helpers/validateSignup';
-import types from '../../redux/types';
+import validateSignup from 'helpers/validateSignup';
+import types from 'types';
 
 export default function Signup() {
   const dispatch = useDispatch();

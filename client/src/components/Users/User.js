@@ -1,12 +1,20 @@
 import React, { memo } from 'react';
 import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
-import types from '../../redux/types';
+import types from 'types';
 
-function ItemListUsers({ user }) {
+function User({ user }) {
   const dispatch = useDispatch();
 
-  const handleClick = () => dispatch({ type: types.OPEN_USER, payload: user });
+  const handleClick = () => dispatch({
+    type: types.OPEN_CHAT,
+    payload: {
+      user,
+      messages: [],
+      _id: null,
+      index: -1
+    }
+  });
 
   return (
     <div
@@ -29,8 +37,8 @@ function ItemListUsers({ user }) {
   );
 }
 
-ItemListUsers.propTypes = {
+User.propTypes = {
   user: PropTypes.object.isRequired
 };
 
-export default memo(ItemListUsers);
+export default memo(User);

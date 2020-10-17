@@ -21,4 +21,5 @@ export interface MessageI extends Document {
   to: Types.ObjectId;
   content: string;
   date: Date;
+  seen: Boolean
 }

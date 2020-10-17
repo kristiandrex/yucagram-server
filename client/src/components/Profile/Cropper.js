@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom';
 import ReactImageCrop from 'react-image-crop';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { scaleImage } from '../../helpers/image';
+import { scaleImage } from 'helpers/image';
 import 'react-image-crop/dist/ReactCrop.css';
 
 const StyledCropper = styled.div`

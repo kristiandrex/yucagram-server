@@ -9,6 +9,11 @@ const router = Router();
 
 router.post('/avatar', multer.single('avatar'), async (req, res) => {
   try {
+    if (!req.file) {
+      await User.findByIdAndUpdate(res.locals.user, { new: false });
+      return res.sendStatus(200);
+    }
+
     const file = path.resolve(req.file.path);
     const ext = path.extname(req.file.filename);
     const basename = path.basename(req.file.filename, ext);
@@ -21,8 +26,7 @@ router.post('/avatar', multer.single('avatar'), async (req, res) => {
       .toFile(newFile);
 
     const upload = await cloudinary.uploader.upload(newFile);
-    await User.findByIdAndUpdate(res.locals.user._id, { avatar: upload.secure_url });
-    
+    await User.findByIdAndUpdate(res.locals.user, { avatar: upload.secure_url, new: false });
     res.send(upload.secure_url);
   }
 

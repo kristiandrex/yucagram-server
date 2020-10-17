@@ -9,11 +9,6 @@ import authToken from '../middlewares/authToken';
 const router = Router();
 
 router.use(authToken);
-
-router.get('/', (req, res) => {
-  res.send(':D');
-});
-
 router.use('/search', search);
 router.use('/chats', chats);
 router.use('/messages', messages);

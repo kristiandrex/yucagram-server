@@ -1,8 +1,8 @@
-import React, { memo, useMemo } from 'react';
-import ItemListChats from './ItemListChats';
+import React, { useMemo } from 'react';
+import Chat from './Chat';
 import PropTypes from 'prop-types';
 
-function ListChats({ chats, searching }) {
+export default function ListOfChats({ chats, searching }) {
   const show = useMemo(() => (searching && chats.length > 0), [searching, chats.length]);
 
   return (
@@ -10,7 +10,7 @@ function ListChats({ chats, searching }) {
       {show && <div className='p-2 border-bottom font-weight-bold text-center'>Chats</div>}
       {
         chats.map((chat, index) => (
-          <ItemListChats
+          <Chat
             key={chat._id}
             chat={chat}
             index={index}
@@ -21,9 +21,7 @@ function ListChats({ chats, searching }) {
   );
 }
 
-ListChats.propTypes = {
+ListOfChats.propTypes = {
   chats: PropTypes.array.isRequired,
   searching: PropTypes.bool.isRequired
 };
-
-export default memo(ListChats);

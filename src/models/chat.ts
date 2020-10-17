@@ -12,12 +12,10 @@ const schema = new Schema({
     ref: 'User',
     required: true
   },
-  messages: [
-    {
-      type: Types.ObjectId,
-      ref: 'Message'
-    }
-  ],
+  messages: [{
+    type: Types.ObjectId,
+    ref: 'Message'
+  }],
   unread: {
     type: Number,
     default: 0

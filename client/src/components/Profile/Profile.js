@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 import styled from 'styled-components';
 import { useDispatch } from 'react-redux';
 import AvatarChooser from './AvatarChooser';
-import { closeProfile } from '../../redux/actions/auth';
+import { closeProfile } from 'actions/auth';
 
 const StyledProfile = styled.div`
   background: #fff;
@@ -26,12 +26,12 @@ const StyledProfile = styled.div`
   }
 `;
 
-export default function Profile() {
+const Profile = forwardRef((_, ref) => {
   const dispatch = useDispatch();
   const handleClose = () => dispatch(closeProfile());
 
   return (
-    <StyledProfile>
+    <StyledProfile ref={ref}>
       <div className='top-bar p-2 bg-primary text-white'>
         <span className='material-icons' onClick={handleClose}>keyboard_backspace</span>
         <span className='font-weight-bold'>Perfil</span>
@@ -41,4 +41,6 @@ export default function Profile() {
       </div>
     </StyledProfile>
   );
-}
+});
+
+export default Profile;

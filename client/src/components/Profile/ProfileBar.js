@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
@@ -25,7 +25,7 @@ const StyledDiv = styled.div`
   }
 `;
 
-function ProfileBar({ children, username, avatar, onClick }) {
+export default function ProfileBar({ children, username, avatar, onClick }) {
   return (
     <StyledDiv className='p-2 bg-primary profile-card'>
       <div className='rounded-circle border' onClick={onClick}>
@@ -43,5 +43,3 @@ ProfileBar.propTypes = {
   avatar: PropTypes.string.isRequired,
   onClick: PropTypes.func
 };
-
-export default memo(ProfileBar);

@@ -1,24 +1,23 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState } from 'react';
 import { Formik, Form } from 'formik';
-import axios from 'axios';
 import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
-import Input from '../UI/Input';
+import Input from 'components/UI/Input';
 import LoginLayout from './Layout';
-import validateSignin from '../../helpers/validateSignin';
-import { signin } from '../../redux/actions/auth';
+import validateSignin from 'helpers/validateSignin';
+import { signin } from 'actions/auth';
 
 export default function Signin() {
   const [alert, setAlert] = useState({ show: false, message: 'Nombre de usuario y/o contraseña incorrectos' });
   const dispatch = useDispatch();
 
-  const handleOnSubmit = useCallback(async (values) => {
+  const handleOnSubmit = function (values) {
     try {
-      const { data } = await axios.post('/api/signin', values);
-      dispatch(signin(data.user, data.token));
+      dispatch(signin(values));
     }
 
     catch (error) {
+      console.log('chat');
       console.warn(error.response);
 
       if (error.response.status === 400) {
@@ -27,7 +26,7 @@ export default function Signin() {
 
       setAlert({ message: 'Intenta más tarde', show: true });
     }
-  }, [dispatch]);
+  };
 
   return (
     <LoginLayout>
@@ -66,14 +65,14 @@ export default function Signin() {
               />
             </div>
             <button className='btn btn-primary btn-block' type='submit' disabled={isSubmitting}>
-							Iniciar sesión
+              Iniciar sesión
             </button>
             <div className='btn-group btn-block mt-3'>
               <button type='button' className='btn btn-link btn-sm'>
-								¿Olvidaste la contraseña?
+                ¿Olvidaste la contraseña?
               </button>
               <Link className='btn btn-link btn-sm' to='/signup'>
-								Regístrate
+                Regístrate
               </Link>
             </div>
           </Form>

@@ -1,7 +1,7 @@
 import React from 'react';
 import Dropdown from 'react-bootstrap/Dropdown';
 import { useDispatch } from 'react-redux';
-import { signout, openProfile } from '../../redux/actions/auth';
+import { signout, openProfile } from 'actions/auth';
 
 export default function ProfileOptions() {
   const dispatch = useDispatch();

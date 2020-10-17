@@ -6,7 +6,7 @@ const schema = new Schema({
     type: Types.ObjectId,
     ref: 'User',
     required: true
-  }, 
+  },
   to: {
     type: Types.ObjectId,
     ref: 'User',
@@ -19,6 +19,10 @@ const schema = new Schema({
   date: {
     type: Date,
     required: true
+  },
+  seen: {
+    type: Boolean,
+    default: false
   }
 });
 
