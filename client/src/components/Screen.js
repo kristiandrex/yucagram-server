@@ -5,9 +5,14 @@ import Lateral from './Lateral/Lateral';
 import InitialAvatar from './Profile/InitialAvatar';
 import Current from './Current/Current';
 import { SocketContext } from './Socket';
-import { addIncomingMessage, messageSeen } from 'actions/messages';
+import { addIncomingMessage } from 'actions/messages';
 
 const StyledSession = styled.div`
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+
   .no-outline {
     outline: none;
   }
@@ -37,7 +42,7 @@ export default function Screen() {
   }
 
   return (
-    <StyledSession className='row no-gutters h-100'>
+    <StyledSession className='row no-gutters'>
       <Lateral />
       <Current />
     </StyledSession>

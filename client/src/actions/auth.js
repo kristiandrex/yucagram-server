@@ -1,4 +1,4 @@
-import fetch from 'helpers/fetch';
+import ajax from 'helpers/ajax';
 import types from '../types';
 
 export function verifyAuth() {
@@ -17,7 +17,7 @@ function signinToken() {
   const token = localStorage.getItem('token');
 
   return async (dispatch) => {
-    const response = await fetch.get('/api/signin/token');
+    const response = await ajax.get('/api/signin/token');
 
     dispatch(actionSignin({ user: response.data, token }));
   }
@@ -25,7 +25,7 @@ function signinToken() {
 
 export function signin(data) {
   return async (dispatch) => {
-    const response = await fetch.post('/api/signin', data);
+    const response = await ajax.post('/api/signin', data);
     
     localStorage.setItem('token', response.data.token);
 
@@ -48,7 +48,7 @@ export function signout() {
 
 export async function changeAvatar(data) {
   try {
-    const response = await fetch.post('/api/auth/upload/avatar', data);
+    const response = await ajax.post('/api/auth/upload/avatar', data);
 
     return {
       type: types.SET_AVATAR,
@@ -64,7 +64,7 @@ export async function changeAvatar(data) {
 export function defaultAvatar() {
   return async (dispatch) => {
     try {
-      await fetch.post('/api/auth/upload/avatar');
+      await ajax.post('/api/auth/upload/avatar');
       dispatch({ type: types.DEFAULT_AVATAR });
     }
 

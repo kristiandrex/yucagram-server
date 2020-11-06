@@ -10,17 +10,17 @@ export default function MessageOwn({ message }) {
   const socket = useContext(SocketContext);
   const dispatch = useDispatch();
 
-  const onMessageSeen = (data) => {
-    if (data._id === message._id) {
-      dispatch(messageSeen(message));
-    }
-  };
-
   useEffect(() => {
+    const onMessageSeen = (data) => {
+      if (data._id === message._id) {
+        dispatch(messageSeen(message));
+      }
+    };
+
     if (!message.seen) {
       socket.on('MESSAGE_SEEN', onMessageSeen);
     }
-  }, []);
+  }, [dispatch, message, socket]);
 
   return (
     <MessagePill message={message} key={message._id} own>

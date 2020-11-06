@@ -6,7 +6,7 @@
 	"scripts": {
 		"dev": "nodemon src/index.ts -e ts --exec ts-node",
 		"start": "node build/index.js",
-		"heroku-postbuild": "tsc && cd client && yarn install && yarn run build"
+		"heroku-postbuild": "tsc && cd client && npm install && npm run build"
 	},
 	"keywords": [],
 	"author": "kristiandrex",
@@ -40,7 +40,6 @@
 		"socket.io": "^2.3.0"
 	},
 	"engines": {
-    "node": "12.x",
-    "yarn": "1.x"
+		"node": "12.x"
 	}
 }

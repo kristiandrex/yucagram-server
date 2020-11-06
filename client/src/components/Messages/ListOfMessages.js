@@ -1,11 +1,11 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import PropTypes from 'prop-types';
 import Message from './Message';
 import MessageOwn from './MessageOwn';
 
-export default function ListOfMessages({ messages }) {
+export default function ListOfMessages() {
   const user = useSelector((state) => state.auth.user);
+  const messages = useSelector((state) => state.chats.current.messages);
 
   return (
     <div className='messages px-2'>
@@ -19,7 +19,3 @@ export default function ListOfMessages({ messages }) {
     </div>
   );
 }
-
-ListOfMessages.propTypes = {
-  messages: PropTypes.array.isRequired
-};

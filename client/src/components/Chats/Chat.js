@@ -56,15 +56,15 @@ export default function Chat({ chat, index }) {
   const handleOpenChat = () => dispatch(openChat(chat, index));
   const handleDelete = () => dispatch(deleteChat(chat._id, index));
 
-  const handleMessageSeen = (message) => {
-    if (message._to === chat.user._id) {
-      
-    }
-  };
-
   useEffect(() => {
+    const handleMessageSeen = (message) => {
+      if (message._to === chat.user._id) {
+
+      }
+    };
+
     socket.on('MESSAGE_SEEN', handleMessageSeen);
-  }, [socket]);
+  }, [socket, chat]);
 
   return (
     <StyledChat className='border-bottom p-2' onClick={handleOpenChat}>
@@ -72,7 +72,7 @@ export default function Chat({ chat, index }) {
         <img src={chat.user.avatar} alt={`Foto de ${chat.user.username}`} />
       </div>
       <span className='username'>{chat.user.username}</span>
-      <LastMessage/>
+      <LastMessage />
       <Badge hidden={hideBadge} variant='primary'>{chat.unread}</Badge>
       <DropdownOptions>
         <Dropdown.Item onClick={handleDelete}>

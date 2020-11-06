@@ -12,6 +12,7 @@ function connect() {
 }
 
 function disconnect() {
+  instance.disconnect();
   return instance = null;
 }
 

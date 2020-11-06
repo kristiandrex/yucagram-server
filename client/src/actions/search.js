@@ -1,5 +1,5 @@
 import types from 'types';
-import fetch from 'helpers/fetch';
+import ajax from 'helpers/ajax';
 
 export default function search(value) {
   return async (dispatch, getState) => {
@@ -14,7 +14,7 @@ export default function search(value) {
     ignore.push(state.auth.user.username);
 
     try {
-      const response = await fetch.post('/api/auth/search', { value, ignore });
+      const response = await ajax.post('/api/auth/search', { value, ignore });
       dispatch(setSearch(chats, response.data));
     }
 
