@@ -3,20 +3,20 @@ import jwt from 'jsonwebtoken';
 import User from '../models/user';
 
 export default async function authToken(req: Request, res: Response, next: NextFunction) {
-  try {
-    const _id = jwt.verify(<string>req.headers.authorization, <string>process.env.SEED);
-    const user = await User.findOne({ _id });
+    try {
+        const _id = jwt.verify(<string>req.headers.authorization, <string>process.env.SEED);
+        const user = await User.findById(_id, '-chats');
 
-    if (!user) {
-      return res.sendStatus(400);
+        if (!user) {
+            return res.sendStatus(400);
+        }
+
+        res.locals.user = user;
+        next();
     }
 
-    res.locals.user = _id;
-    next();
-  }
-
-  catch (error) {
-    console.error(error);
-    res.sendStatus(400);
-  }
+    catch (error) {
+        console.error(error);
+        res.sendStatus(500);
+    }
 }

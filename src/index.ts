@@ -1,13 +1,13 @@
 import dotenv from 'dotenv';
-dotenv.config();
-
 import express from 'express';
 import { connect } from 'mongoose';
 import { createServer } from 'http';
 import cors from 'cors';
-import path from 'path';
-import io from './services/socket';
-import routes from './routes/index';
+
+dotenv.config();
+
+import io from 'src/services/socket';
+import routes from "src/routes";
 
 const app = express();
 
@@ -15,14 +15,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cors({ origin: '/', allowedHeaders: 'Authorization' }));
 app.use('/api', routes);
-
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.resolve(__dirname, '../client/build/')));
-
-  app.get('*', (_req, res) => {
-    res.sendFile(path.resolve(__dirname, '../client/build/index.html'));
-  });
-}
 
 const server = createServer(app);
 
