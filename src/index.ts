@@ -1,34 +1,27 @@
 import dotenv from 'dotenv';
+dotenv.config();
+
 import express from 'express';
-import { connect } from 'mongoose';
 import { createServer } from 'http';
 import cors from 'cors';
 
-dotenv.config();
-
-import io from 'src/services/socket';
-import routes from "src/routes";
+import mongo from "./services/mongo";
+import socket from './services/socket';
+import routes from "./routes";
 
 const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cors({ origin: '/', allowedHeaders: 'Authorization' }));
-app.use('/api', routes);
+app.use(cors());
+app.use('/', routes);
 
 const server = createServer(app);
 
-io.connect(server);
+socket.init(server);
 
 server.listen(process.env.PORT, () => {
-  console.log('Server on port', process.env.PORT);
+    console.log('Server on port', process.env.PORT);
 });
 
-connect(<string>process.env.MONGO, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  useCreateIndex: true,
-  useFindAndModify: false
-})
-  .then(() => console.log('Connected to MongoDB'))
-  .catch((error) => console.error(error));
+mongo.init();

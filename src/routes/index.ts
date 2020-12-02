@@ -11,14 +11,14 @@ import validate from '../middlewares/validate';
 
 const router = Router();
 
-router.use('/signup', [
+router.post('/signup', [
     check('username', 'Este campo es obligatorio').notEmpty(),
     check('email', 'Este campo es obligatorio').isEmail(),
     check('password', 'Este campo es obligatorio').notEmpty(),
     validate
 ], signup);
 
-router.use('/signin', [
+router.post('/signin', [
     check('username', 'Este campo es obligatorio').notEmpty(),
     check('password', 'Este campo es obligatorio').notEmpty(),
     validate

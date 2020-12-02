@@ -2,17 +2,17 @@ import { Schema, model, Types } from 'mongoose';
 import { MessageI } from '../@types';
 
 const schema = new Schema({
-    chat: {
-        type: Types.ObjectId,
-        ref: 'Chat',
-        required: true
-    },
-    user: {
+    from: {
         type: Types.ObjectId,
         ref: 'User',
         required: true
     },
-    content: {
+    to: {
+        type: Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
+    text: {
         type: String,
         required: true
     },

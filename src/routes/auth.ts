@@ -1,7 +1,6 @@
 import { Router } from 'express';
 import search from './search';
 import chats from './chats';
-import messages from './messages';
 import upload from './upload';
 import authToken from '../middlewares/authToken';
 
@@ -15,7 +14,6 @@ router.get('/', (_, res) => {
 
 router.use('/search', search);
 router.use('/chats', chats);
-router.use('/messages', messages);
 router.use('/upload', upload);
 
 export default router;

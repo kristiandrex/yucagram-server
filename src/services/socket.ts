@@ -4,80 +4,86 @@ import jwt from 'jsonwebtoken';
 import Message from '../models/message';
 import Chat from '../models/chat';
 import User from '../models/user';
+import { MessageI } from '../@types';
 
 let socket: io.Server;
 
-function connect(httpServer: Server) {
-  socket = io(httpServer, { path: '/api/socket' });
-  socket.on('connection', onConnect);
+function init(httpServer: Server): io.Server {
+    socket = io(httpServer);
+    socket.on('connection', connect);
 
-  return socket;
-};
-
-function onConnect(client: io.Socket) {
-  const token = client.handshake.query.token;
-
-  try {
-    const _id: string = <string>jwt.verify(token, <string>process.env.SEED);
-    client.join(_id);
-  }
-
-  catch (error) {
-    console.error(error);
-  }
-
-  client.on('SEND_MESSAGE', onSendMessage);
-  client.on('MESSAGE_SEEN', onMessageSeen);
+    return socket;
 }
 
-async function onMessageSeen(_id: string) {
-  try {
-    const message = await Message.findByIdAndUpdate(_id, { seen: true }, { new: true, select: 'from to' });
+function connect(client: io.Socket) {
+    const token = client.handshake.query.token;
 
-    if (message !== null) {
-      socket.to(message.from.toString()).emit('MESSAGE_SEEN', message);
+    try {
+        const _id: string = <string>jwt.verify(token, <string>process.env.SEED);
+        client.join(_id);
     }
-  }
 
-  catch (error) {
-    console.error(error);
-  }
+    catch (error) {
+        console.error(error);
+    }
+
+    client.on('SEND_MESSAGE', sendMessage);
+    client.on('MESSAGE_SEEN', messageSeen);
 }
 
-async function onSendMessage(data: any, response: Function) {
-  try {
-    const message = new Message(data);
-    await message.save();
+async function sendMessage(payload: MessageI, response: (message: MessageI) => void) {
+    try {
+        const message = new Message(payload);
+        await message.save();
 
-    await checkAndAddMessage(data.from, data.to, message);
-    await checkAndAddMessage(data.to, data.from, message);
+        await Chat.findOneAndUpdate({ from: payload.from, to: payload.to }, { $push: { messages: message._id } });
 
-    response(message);
-    socket.to(data.to).emit('SEND_MESSAGE', message);
-  }
+        let chatTo = await Chat.findOneAndUpdate(
+            { from: payload.to, to: payload.from },
+            { $push: { messages: message._id }, $inc: { unread: 1 } }
+        );
 
-  catch (error) {
-    console.error(error);
-  }
+        if (!chatTo) {
+            chatTo = new Chat({
+                from: payload.to,
+                to: payload.from,
+                messages: [message._id],
+                unread: 1
+            });
+
+            await chatTo.save();
+            await User.findByIdAndUpdate(payload.to, { $push: { chats: chatTo._id } });
+        }
+
+        response(message);
+        socket.to(<string>payload.to).emit("SEND_MESSAGE", message);
+    }
+
+    catch (error) {
+        console.log(error);
+        response(error);
+    }
 }
 
-async function checkAndAddMessage(owner: string, user: string, message: any) {
-  let chat = await Chat.findOne({ owner, user });
+async function messageSeen(_id: string) {
+    try {
+        const message = await Message.findByIdAndUpdate(_id, { seen: true }, { select: 'from to' });
 
-  if (!chat) {
-    chat = new Chat({ owner, user });
-    await User.findByIdAndUpdate(owner, { $push: { chats: chat._id } });
-  }
+        if (message) {
+            await Chat.findOneAndUpdate(
+                { from: message.to, to: message.from },
+                { $inc: { unread: -1 } }
+            );
 
-  chat.messages.push(message._id);
+            socket.to(<string>message.from).emit("MESSAGE_SEEN", message);
+        }
+    }
 
-  if (message.to === owner) {
-    chat.unread += 1;
-  }
-
-  await chat.save();
+    catch (error) {
+        console.log(error);
+    }
 }
 
 export default {
-  connect
+    init
 }

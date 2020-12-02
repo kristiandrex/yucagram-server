@@ -3,7 +3,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import User from '../models/user';
 
-export default async function (req: Request, res: Response) {
+export default async function (req: Request, res: Response): Promise<void> {
     try {
         const { username, email } = req.body;
 

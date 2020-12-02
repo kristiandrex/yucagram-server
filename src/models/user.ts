@@ -29,14 +29,13 @@ const schema = new Schema({
     role: {
         type: String,
         default: 'USER',
-        inmutable: true
     }
 });
 
 schema.plugin(uniqueValidator);
 
 schema.methods.toJSON = function () {
-    let object = this.toObject();
+    const object = this.toObject();
     delete object.password;
     return object;
 };
