@@ -6,8 +6,8 @@
 	"scripts": {
 		"dev": "nodemon src/index.ts -e ts --exec ts-node",
 		"start": "node build/index.js",
-        "heroku-postbuild": "tsc && cd client && npm install && npm run build",
-        "lint": "eslint ."
+    "heroku-postbuild": "tsc && cd client && npm install && npm run build",
+    "lint": "eslint ."
 	},
 	"keywords": [],
 	"author": "kristiandrex",

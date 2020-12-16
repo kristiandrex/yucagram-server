@@ -1,24 +1,19 @@
-import { Router } from 'express';
-import multer from '../services/multer';
-import path from 'path';
-import sharp from 'sharp';
-import cloudinary from '../services/cloudinary';
-import User from '../models/user';
+import { Router } from "express";
+import multer from "../util/multer";
+import path from "path";
+import sharp from "sharp";
+import cloudinary from "../util/cloudinary";
+import User from "../models/user";
 
 const router = Router();
 
-router.post('/avatar', multer.single('avatar'), async (req, res) => {
+router.post("/avatar", multer.single("avatar"), async (req, res) => {
   try {
-    if (!req.file) {
-      await User.findByIdAndUpdate(res.locals.user, { new: false });
-      return res.sendStatus(200);
-    }
-
     const file = path.resolve(req.file.path);
     const ext = path.extname(req.file.filename);
     const basename = path.basename(req.file.filename, ext);
     const region = JSON.parse(req.body.region);
-    const newFile = path.resolve('uploads/' + basename + '.cropped' + ext);
+    const newFile = path.resolve("uploads/" + basename + ".cropped" + ext);
 
     await sharp(file)
       .extract(region)
@@ -26,7 +21,7 @@ router.post('/avatar', multer.single('avatar'), async (req, res) => {
       .toFile(newFile);
 
     const upload = await cloudinary.uploader.upload(newFile);
-    await User.findByIdAndUpdate(res.locals.user, { avatar: upload.secure_url, new: false });
+    await User.findByIdAndUpdate(res.locals.user, { avatar: upload.secure_url });
     res.send(upload.secure_url);
   }
 

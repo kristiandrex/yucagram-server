@@ -1,10 +1,10 @@
-import { Router } from 'express';
-import authToken from '../middlewares/authToken';
-import User from '../models/user';
+import { Router } from "express";
+import authToken from "../middlewares/authToken";
+import User from "../models/user";
 
 const router = Router();
 
-router.put('/avatar', authToken, async (req, res) => {
+router.put("/avatar", authToken, async (req, res) => {
   try {
     await User.findByIdAndUpdate(res.locals.user, { avatar: req.body.avatar });
     res.sendStatus(200);

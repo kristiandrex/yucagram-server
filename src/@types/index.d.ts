@@ -1,28 +1,28 @@
-import { Document, Types } from 'mongoose';
+import { Document, Types } from "mongoose";
 
 interface UserI extends Document {
-    username: string;
-    email: string;
-    password: string;
-    avatar: string;
-    chats: ChatI[];
-    role: "USER";
+  username: string;
+  email: string;
+  password: string;
+  avatar: string;
+  chats: ChatI[];
+  role: "USER";
 }
 
-type UserType = string | UserI | Types.ObjectId;
+type ID = string | Types.ObjectId;
 
 interface ChatI extends Document {
-    from: UserType;
-    to: UserType
-    messages: MessageI[];
-    unread: number;
-    role: 'CHAT';
+  from: ID | UserI;
+  to: ID | UserI;
+  messages: MessageI[];
+  unread: number;
+  role: "CHAT";
 }
 
 interface MessageI extends Document {
-    from: UserType;
-    to: UserType;
-    text: string;
-    date: Date;
-    seen: boolean
+  from: ID | UserI;
+  to: ID | UserI;
+  text: string;
+  date: Date;
+  seen: boolean
 }
