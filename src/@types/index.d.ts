@@ -5,7 +5,7 @@ interface UserI extends Document {
   email: string;
   password: string;
   avatar: string;
-  chats: ChatI[];
+  chats: ChatI[] | ID[];
   role: "USER";
 }
 

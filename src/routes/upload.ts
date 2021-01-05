@@ -1,23 +1,23 @@
 import { Router } from "express";
-import multer from "../util/multer";
 import path from "path";
 import sharp from "sharp";
+import multer from "../util/multer";
 import cloudinary from "../util/cloudinary";
+import checkFolders from "../middlewares/checkfolders";
 import User from "../models/user";
 
 const router = Router();
+router.use(checkFolders);
 
 router.post("/avatar", multer.single("avatar"), async (req, res) => {
   try {
     const file = path.resolve(req.file.path);
-    const ext = path.extname(req.file.filename);
-    const basename = path.basename(req.file.filename, ext);
     const region = JSON.parse(req.body.region);
-    const newFile = path.resolve("uploads/" + basename + ".cropped" + ext);
+    const newFile = path.resolve("uploads/avatar/cropped/" + req.file.filename);
 
     await sharp(file)
       .extract(region)
-      .resize({ width: 150 })
+      .resize({ width: 150, height: 150 })
       .toFile(newFile);
 
     const upload = await cloudinary.uploader.upload(newFile);

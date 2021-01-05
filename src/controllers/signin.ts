@@ -5,10 +5,10 @@ import User from "../models/user";
 
 export default async function (req: Request, res: Response): Promise<void> {
   try {
-    const user = await User.findOne({ username: req.body.username }, "-chats");
+    const user = await User.findOne({ username: req.body.username });
 
     if (!user) {
-      res.sendStatus(400);
+      res.sendStatus(404);
       return;
     }
 

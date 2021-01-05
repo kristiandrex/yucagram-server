@@ -9,6 +9,9 @@
   ],
   "rules": {
     "@typescript-eslint/quotes": [1, "double"],
-    "indent": [1, 2]
+    "indent": [1, 2],
+    "semi": [1, "always"],
+    "@typescript-eslint/no-empty-function": ["warn"],
+    "no-empty": "warn"
   }
 }

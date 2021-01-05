@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 import Message from "../models/message";
 import Chat from "../models/chat";
 import User from "../models/user";
-import { MessageI } from "../@types";
+import { MessageI, UserI } from "../@types";
 
 let socket: io.Server;
 
@@ -61,11 +61,15 @@ async function sendMessage(payload: MessageI, response: (message: MessageI) => v
 
 async function readMessage(_id: string, response: (message: string) => void) {
   try {
-    const message = await Message.findByIdAndUpdate(_id, { seen: true }, { select: "from to" });
+    const message = await Message.findByIdAndUpdate(_id, { seen: true });
 
     if (message) {
       const from = await Chat.findOne({ from: message.from, to: message.to });
-      const to = await Chat.findOneAndUpdate({ from: message.to, to: message.from }, { $inc: { unread: -1 } });
+
+      const to = <UserI>await Chat.findOneAndUpdate(
+        { from: message.to, to: message.from },
+        { $inc: { unread: -1 } }
+      );
 
       response(to?._id);
       socket.to(<string>message.from).emit("READ_MESSAGE", { message, chat: from?._id });
@@ -79,4 +83,4 @@ async function readMessage(_id: string, response: (message: string) => void) {
 
 export default {
   init
-}
+};

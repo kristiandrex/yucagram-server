@@ -1,3 +1,4 @@
 # CHAT-MERN-TS-SERVER
 
-Chat created with Typescript and MERN Stack.
+Server Chat created with Typescript and MERN Stack.
+Client repository: https://github.com/kristiandrex/chat-mern-ts-client
