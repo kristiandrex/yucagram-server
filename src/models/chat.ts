@@ -31,6 +31,7 @@ const schema = new Schema({
   role: {
     type: String,
     default: "CHAT",
+    immutable: true
   }
 }, { timestamps: true });
 

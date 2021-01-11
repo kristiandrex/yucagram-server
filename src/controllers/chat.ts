@@ -27,13 +27,7 @@ async function getChats(_: Request, res: Response): Promise<void> {
     const chats = await Chat
       .find({ from: res.locals.user })
       .populate({ path: "to", select: "username avatar" })
-      .populate({
-        path: "messages",
-        limit: LIMIT_MESSAGES,
-        options: {
-          sort: { date: -1 }
-        }
-      })
+      .populate({ path: "messages" })
       .sort("-updatedAt");
 
     res.send(chats);
