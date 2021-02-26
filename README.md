@@ -1,5 +1,5 @@
-# CHAT-MERN-TS-SERVER
+# yucagram-server
 
 Server Chat created with Typescript and MERN Stack.
 
-Client repository: https://github.com/kristiandrex/chat-mern-ts-client
+Client repository: https://github.com/kristiandrex/yucagram-client
