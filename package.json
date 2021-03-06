@@ -4,7 +4,7 @@
 	"description": "Chat created with Typescript and MERN Stack.",
 	"main": "src/index.js",
 	"scripts": {
-		"dev": "nodemon -e ts --exec ts-node src/index.ts",
+		"dev": "nodemon --ext ts --exec node --inspect -r ts-node/register src/index.ts",
 		"start": "node build/index.js",
 		"build": "tsc",
 		"heroku-postbuild": "tsc",

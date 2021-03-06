@@ -12,11 +12,16 @@ router.use(checkFolders);
 router.post("/avatar", multer.single("avatar"), async (req, res) => {
   try {
     const file = path.resolve(req.file.path);
-    const region = JSON.parse(req.body.region);
+    const area = JSON.parse(req.body.area);
     const newFile = path.resolve("uploads/avatar/cropped/" + req.file.filename);
 
     await sharp(file)
-      .extract(region)
+      .extract({
+        height: area.height,
+        width: area.width,
+        top: area.y,
+        left: area.x,
+      })
       .resize({ width: 150, height: 150 })
       .toFile(newFile);
 
