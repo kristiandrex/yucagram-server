@@ -1,5 +1,5 @@
 import { model, Schema, Types } from "mongoose";
-import { ChatI } from "../@types";
+import { ChatI } from "@types";
 
 /**
  * from: user owner of the chat

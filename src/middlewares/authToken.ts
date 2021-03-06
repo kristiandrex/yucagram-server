@@ -1,6 +1,6 @@
 import { Response, NextFunction, Request } from "express";
 import jwt from "jsonwebtoken";
-import User from "../models/user";
+import User from "@models/user";
 
 export default async function authToken(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {

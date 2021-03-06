@@ -1,7 +1,7 @@
 import { Types } from "mongoose";
-import Chat from "../models/chat";
-import User from "../models/user";
-import { ChatI, UserI } from "../@types";
+import Chat from "@models/chat";
+import User from "@models/user";
+import { ChatI, UserI } from "@types";
 
 /**
  * @param from ID from user owner of the chat
@@ -34,4 +34,4 @@ async function create(from: Types.ObjectId, to: Types.ObjectId): Promise<ChatI |
 
 export default {
   create
-}
+};

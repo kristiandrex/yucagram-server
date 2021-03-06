@@ -1,3 +1,4 @@
+import "module-alias/register";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -5,9 +6,9 @@ import express from "express";
 import { createServer } from "http";
 import cors from "cors";
 
-import mongo from "./util/mongo";
-import socket from "./util/socket";
-import routes from "./routes";
+import mongo from "@util/mongo";
+import socket from "@util/socket";
+import routes from "@routes/";
 
 const app = express();
 

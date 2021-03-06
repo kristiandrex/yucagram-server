@@ -1,6 +1,6 @@
 import { Schema, model, Types } from "mongoose";
 import uniqueValidator from "mongoose-unique-validator";
-import { UserI } from "../@types";
+import { UserI } from "@types";
 
 const schema = new Schema({
   username: {

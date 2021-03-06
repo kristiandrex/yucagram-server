@@ -39,6 +39,7 @@
 		"express": "^4.17.1",
 		"express-validator": "^6.6.1",
 		"jsonwebtoken": "^8.5.1",
+		"module-alias": "^2.2.2",
 		"mongoose": "^5.11.10",
 		"mongoose-unique-validator": "^2.0.3",
 		"multer": "^1.4.2",
@@ -47,5 +48,12 @@
 	},
 	"engines": {
 		"node": "12.x"
-	}
+	},
+  "_moduleAliases": {
+    "@controllers": "build/controllers",
+    "@middlewares": "build/middlewares",
+    "@models": "build/models",
+    "@routes": "build/routes",
+    "@util": "build/util"
+  }
 }

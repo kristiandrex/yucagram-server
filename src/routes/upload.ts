@@ -1,10 +1,10 @@
 import { Router } from "express";
 import path from "path";
 import sharp from "sharp";
-import multer from "../util/multer";
-import cloudinary from "../util/cloudinary";
-import checkFolders from "../middlewares/checkfolders";
-import User from "../models/user";
+import multer from "@util/multer";
+import cloudinary from "@util/cloudinary";
+import checkFolders from "@middlewares/checkfolders";
+import User from "@models/user";
 
 const router = Router();
 router.use(checkFolders);

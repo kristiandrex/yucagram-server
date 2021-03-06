@@ -1,7 +1,7 @@
 import { Request, response, Response } from "express";
-import Chat from "../models/chat";
-import Message from "../models/message";
-import helpers from "../helpers/chat";
+import Chat from "@models/chat";
+import Message from "@models/message";
+import helpers from "@helpers/chat";
 
 const LIMIT_MESSAGES = 10;
 

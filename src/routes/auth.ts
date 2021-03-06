@@ -2,8 +2,8 @@ import { Router } from "express";
 import search from "./search";
 import chats from "./chats";
 import upload from "./upload";
-import User from "../models/user";
-import authToken from "../middlewares/authToken";
+import User from "@models/user";
+import authToken from "@middlewares/authToken";
 
 const router = Router();
 router.use(authToken);

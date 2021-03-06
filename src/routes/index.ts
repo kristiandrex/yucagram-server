@@ -2,12 +2,12 @@ import { Router } from "express";
 import { check } from "express-validator";
 
 /**Routes */
-import signup from "../controllers/signup";
-import signin from "../controllers/signin";
+import signup from "@controllers/signup";
+import signin from "@controllers/signin";
 import auth from "./auth";
 
 /**Middlewares */
-import validate from "../middlewares/validate";
+import validate from "@middlewares/validate";
 
 const router = Router();
 

@@ -1,6 +1,6 @@
 import { Router } from "express";
-import User from "../models/user";
-import authToken from "../middlewares/authToken";
+import User from "@models/user";
+import authToken from "@middlewares/authToken";
 
 const router = Router();
 

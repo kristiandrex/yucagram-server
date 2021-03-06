@@ -1,6 +1,6 @@
-import { Document, Types } from "mongoose";
+import { Types, Document } from "mongoose";
 
-interface UserI extends Document {
+export interface UserI extends Document {
   username: string;
   email: string;
   password: string;
@@ -9,9 +9,9 @@ interface UserI extends Document {
   role: "USER";
 }
 
-type ID = string | Types.ObjectId;
+export type ID = string | Types.ObjectId;
 
-interface ChatI extends Document {
+export interface ChatI extends Document {
   from: ID | UserI;
   to: ID | UserI;
   messages: MessageI[];
@@ -19,7 +19,7 @@ interface ChatI extends Document {
   role: "CHAT";
 }
 
-interface MessageI extends Document {
+export interface MessageI extends Document {
   from: ID | UserI;
   to: ID | UserI;
   text: string;

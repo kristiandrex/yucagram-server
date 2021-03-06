@@ -1,10 +1,10 @@
 import io from "socket.io";
 import { Server } from "http";
 import jwt from "jsonwebtoken";
-import Message from "../models/message";
-import Chat from "../models/chat";
-import User from "../models/user";
-import { MessageI, UserI } from "../@types";
+import Message from "@models/message";
+import Chat from "@models/chat";
+import User from "@models/user";
+import { MessageI, UserI } from "@types";
 
 let socket: io.Server;
 
