@@ -51,6 +51,7 @@
 	},
   "_moduleAliases": {
     "@controllers": "build/controllers",
+    "@helpers": "build/helpers",
     "@middlewares": "build/middlewares",
     "@models": "build/models",
     "@routes": "build/routes",
