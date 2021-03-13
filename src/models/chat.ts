@@ -1,12 +1,6 @@
 import { model, Schema, Types } from "mongoose";
 import { ChatI } from "@types";
 
-/**
- * from: user owner of the chat
- * to: the other user of chat
- * unread: messages unread
- * role: chat | group | user
- */
 const schema = new Schema({
   from: {
     type: Types.ObjectId,

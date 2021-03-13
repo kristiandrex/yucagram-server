@@ -1,14 +1,13 @@
-import "module-alias/register";
 import dotenv from "dotenv";
-dotenv.config();
-
 import express from "express";
 import { createServer } from "http";
 import cors from "cors";
 
-import mongo from "@util/mongo";
+dotenv.config();
+
+import routes from "@routes/index";
 import socket from "@util/socket";
-import routes from "@routes/";
+import mongoose from "@util/mongoose";
 
 const app = express();
 
@@ -25,4 +24,4 @@ server.listen(process.env.PORT, () => {
   console.log("Server on port", process.env.PORT);
 });
 
-mongo.init();
+mongoose.init();

@@ -6,6 +6,11 @@ import Chat from "@models/chat";
 import User from "@models/user";
 import { MessageI, UserI } from "@types";
 
+interface ResponseSocket {
+  error: boolean,
+  data: unknown
+}
+
 let socket: io.Server;
 
 function init(httpServer: Server): io.Server {
@@ -31,7 +36,7 @@ function connect(client: io.Socket) {
   client.on("READ_MESSAGE", readMessage);
 }
 
-async function sendMessage(payload: MessageI, response: (message: MessageI) => void) {
+async function sendMessage(payload: MessageI, response: (message: ResponseSocket) => void) {
   try {
     const message = new Message(payload);
     await message.save();
@@ -49,17 +54,17 @@ async function sendMessage(payload: MessageI, response: (message: MessageI) => v
 
     await chat.save();
 
-    socket.to(<string>payload.to).emit("SEND_MESSAGE", { message, chat: chat._id });
-    response(message);
+    socket.to(<string>payload.to).emit("SEND_MESSAGE", { message, chatId: chat._id });
+    response({ error: false, data: message });
   }
 
-  catch (error) {
-    console.log(error);
-    response(error);
+  catch (e) {
+    console.log(e);
+    response({ error: true, data: e });
   }
 }
 
-async function readMessage(_id: string, response: (message: string) => void) {
+async function readMessage(_id: string, response: (message: unknown) => void) {
   try {
     const message = await Message.findByIdAndUpdate(_id, { seen: true });
 
@@ -72,12 +77,12 @@ async function readMessage(_id: string, response: (message: string) => void) {
       );
 
       response(to?._id);
-      socket.to(<string>message.from).emit("READ_MESSAGE", { message, chat: from?._id });
+      socket.to(<string>message.from).emit("READ_MESSAGE", { message, chatId: from?._id });
     }
   }
 
-  catch (error) {
-    console.log(error);
+  catch (e) {
+    console.log(e);
   }
 }
 
