@@ -1,91 +1,73 @@
 import io from "socket.io";
-import { Server } from "http";
+import http from "http";
 import jwt from "jsonwebtoken";
 import Message from "@models/message";
 import Chat from "@models/chat";
-import User from "@models/user";
-import { MessageI, UserI } from "@types";
+import { UserI } from "@types";
 
-interface ResponseSocket {
-  error: boolean,
-  data: unknown
+let instance: io.Server;
+
+const origin = process.env.NODE_ENV === "production"
+  ? "https://yucagram.vercel.app/"
+  : "http://localhost:3000";
+
+const socketOptions = {
+  cors: {
+    origin,
+    methods: ["GET", "POST"],
+    credentials: true,
+    allowedHeaders: ["token"],
+  },
+};
+
+function connect(httpServer: http.Server): void {
+  instance = new io.Server(httpServer, socketOptions);
+  instance.use(middleware);
+  instance.on("connection", listeners);
 }
 
-let socket: io.Server;
-
-function init(httpServer: Server): io.Server {
-  socket = io(httpServer);
-  socket.on("connection", connect);
-
-  return socket;
-}
-
-function connect(client: io.Socket) {
-  const token = client.handshake.query.token;
+function middleware(socket: io.Socket, next: () => void) {
+  const token = <string>socket.handshake.headers.token;
 
   try {
-    const _id: string = <string>jwt.verify(token, <string>process.env.SEED);
-    client.join(_id);
-  }
-
-  catch (error) {
+    const _id = <string>jwt.verify(token, <string>process.env.SEED);
+    socket.join(_id);
+    next();
+  } catch (error) {
     console.error(error);
   }
-
-  client.on("SEND_MESSAGE", sendMessage);
-  client.on("READ_MESSAGE", readMessage);
 }
 
-async function sendMessage(payload: MessageI, response: (message: ResponseSocket) => void) {
-  try {
-    const message = new Message(payload);
-    await message.save();
+function listeners(socket: io.Socket) {
+  socket.on("READ_MESSAGE", async (_id, response) => {
+    try {
+      const message = await Message.findByIdAndUpdate(_id, { seen: true });
 
-    await Chat.findOneAndUpdate({ from: payload.from, to: payload.to }, { $push: { messages: message._id } });
-    let chat = await Chat.findOne({ from: payload.to, to: payload.from });
+      if (message) {
+        const from = await Chat.findOne({ from: message.from, to: message.to });
 
-    if (!chat) {
-      chat = new Chat({ from: payload.to, to: payload.from });
-      await User.findByIdAndUpdate(payload.to, { $push: { chats: chat._id } });
+        const to = <UserI>await Chat.findOneAndUpdate(
+          { from: message.to, to: message.from },
+          { $inc: { unread: -1 } }
+        );
+
+        socket
+          .to(<string>message.from.toString())
+          .emit("READ_MESSAGE", { message, chatId: from?._id });
+
+        response(to?._id);
+      }
+    } catch (error) {
+      console.error(error);
     }
-
-    chat.messages.push(message._id);
-    chat.unread += 1;
-
-    await chat.save();
-
-    socket.to(<string>payload.to).emit("SEND_MESSAGE", { message, chatId: chat._id });
-    response({ error: false, data: message });
-  }
-
-  catch (e) {
-    console.log(e);
-    response({ error: true, data: e });
-  }
+  });
 }
 
-async function readMessage(_id: string, response: (message: unknown) => void) {
-  try {
-    const message = await Message.findByIdAndUpdate(_id, { seen: true });
-
-    if (message) {
-      const from = await Chat.findOne({ from: message.from, to: message.to });
-
-      const to = <UserI>await Chat.findOneAndUpdate(
-        { from: message.to, to: message.from },
-        { $inc: { unread: -1 } }
-      );
-
-      response(to?._id);
-      socket.to(<string>message.from).emit("READ_MESSAGE", { message, chatId: from?._id });
-    }
-  }
-
-  catch (e) {
-    console.log(e);
-  }
+function getInstance(): io.Server {
+  return instance;
 }
 
 export default {
-  init
+  connect,
+  getInstance,
 };

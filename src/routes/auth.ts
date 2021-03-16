@@ -1,23 +1,16 @@
 import { Router } from "express";
-import search from "./search";
-import chats from "./chats";
-import upload from "./upload";
-import User from "@models/user";
 import authToken from "@middlewares/authToken";
+import search from "@routes/search";
+import chats from "@routes/chats";
+import upload from "@routes/upload";
+import messages from "@routes/messages";
+import controller from "@controllers/auth";
 
 const router = Router();
+
 router.use(authToken);
-
-router.get("/", async function (_, res) {
-  try {
-    const user = await User.findById(res.locals.user, "-chats");
-    res.send(user);
-  } catch (error) {
-    res.sendStatus(500);
-    console.error(error);
-  }
-});
-
+router.get("/", controller.verifyAuth);
+router.use("/messages", messages);
 router.use("/search", search);
 router.use("/chats", chats);
 router.use("/upload", upload);
