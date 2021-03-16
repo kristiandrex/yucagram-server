@@ -8,7 +8,7 @@ import { UserI } from "@types";
 let instance: io.Server;
 
 const origin = process.env.NODE_ENV === "production"
-  ? "https://yucagram.vercel.app/"
+  ? "https://yucagram.vercel.app"
   : "http://localhost:3000";
 
 const socketOptions = {
