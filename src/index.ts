@@ -1,3 +1,4 @@
+import "module-alias/register";
 import dotenv from "dotenv";
 import express from "express";
 import { createServer } from "http";
