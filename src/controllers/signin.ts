@@ -8,22 +8,23 @@ export default async function (req: Request, res: Response): Promise<void> {
     const user = await User.findOne({ username: req.body.username });
 
     if (!user) {
-      res.sendStatus(404);
+      res.sendStatus(403);
       return;
     }
 
-    const password: boolean = bcrypt.compareSync(req.body.password, user.password);
+    const matchPassword: boolean = bcrypt.compareSync(
+      req.body.password,
+      user.password
+    );
 
-    if (!password) {
-      res.sendStatus(400);
+    if (!matchPassword) {
+      res.sendStatus(404);
       return;
     }
 
     const token = jwt.sign(user._id.toString(), <string>process.env.SEED);
     res.send({ user, token });
-  }
-
-  catch (error) {
+  } catch (error) {
     console.log(error);
     res.status(500).send("Intenta más tarde");
   }

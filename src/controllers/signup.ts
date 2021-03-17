@@ -15,9 +15,7 @@ export default async function (req: Request, res: Response): Promise<void> {
 
     const token = jwt.sign(user._id.toString(), <string>process.env.SEED);
     res.send({ token, user });
-  }
-
-  catch (error) {
+  } catch (error) {
     console.log(error);
     res.status(500);
   }

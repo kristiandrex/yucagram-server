@@ -2,7 +2,11 @@ import { Response, NextFunction, Request } from "express";
 import jwt from "jsonwebtoken";
 import User from "@models/user";
 
-export default async function authToken(req: Request, res: Response, next: NextFunction): Promise<void> {
+export default async function authToken(
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> {
   try {
     if (!req.headers.authorization) {
       res.sendStatus(401);
@@ -19,10 +23,8 @@ export default async function authToken(req: Request, res: Response, next: NextF
 
     res.locals.user = user._id;
     next();
-  }
-
-  catch (error) {
-    console.error(error);
+  } catch (error) {
     res.sendStatus(500);
+    console.error(error);
   }
 }

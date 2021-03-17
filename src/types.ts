@@ -24,5 +24,5 @@ export interface MessageI extends Document {
   to: ID | UserI;
   text: string;
   date: Date;
-  seen: boolean
+  seen: boolean;
 }

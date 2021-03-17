@@ -7,7 +7,10 @@ import { ChatI, UserI } from "@types";
  * @param from ID from user owner of the chat
  * @param to ID from the other user of the chat
  */
-async function create(from: Types.ObjectId, to: Types.ObjectId): Promise<ChatI | null> {
+async function create(
+  from: Types.ObjectId,
+  to: Types.ObjectId
+): Promise<ChatI | null> {
   try {
     let chat = await Chat.findOne({ to, from });
 
@@ -24,9 +27,7 @@ async function create(from: Types.ObjectId, to: Types.ObjectId): Promise<ChatI |
     chat.to = user;
 
     return chat;
-  }
-
-  catch (error) {
+  } catch (error) {
     console.log(error);
     return null;
   }

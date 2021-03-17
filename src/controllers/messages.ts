@@ -34,7 +34,6 @@ async function createMessage(req: Request, res: Response): Promise<void> {
       .emit("SEND_MESSAGE", { message, chatId: chat._id });
 
     res.send(message);
-
   } catch (error) {
     res.sendStatus(500);
     console.log(error);

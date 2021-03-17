@@ -7,17 +7,18 @@ import { UserI } from "@types";
 
 let instance: io.Server;
 
-const origin = process.env.NODE_ENV === "production"
-  ? "https://yucagram.vercel.app"
-  : "http://localhost:3000";
+const origin =
+  process.env.NODE_ENV === "production"
+    ? "https://yucagram.vercel.app"
+    : "http://localhost:3000";
 
 const socketOptions = {
   cors: {
     origin,
     methods: ["GET", "POST"],
     credentials: true,
-    allowedHeaders: ["token"],
-  },
+    allowedHeaders: ["token"]
+  }
 };
 
 function connect(httpServer: http.Server): void {
@@ -46,9 +47,11 @@ function listeners(socket: io.Socket) {
       if (message) {
         const from = await Chat.findOne({ from: message.from, to: message.to });
 
-        const to = <UserI>await Chat.findOneAndUpdate(
-          { from: message.to, to: message.from },
-          { $inc: { unread: -1 } }
+        const to = <UserI>(
+          await Chat.findOneAndUpdate(
+            { from: message.to, to: message.from },
+            { $inc: { unread: -1 } }
+          )
         );
 
         socket
@@ -69,5 +72,5 @@ function getInstance(): io.Server {
 
 export default {
   connect,
-  getInstance,
+  getInstance
 };

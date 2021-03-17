@@ -4,3 +4,4 @@ build
 uploads
 debug.log
 .vscode
+.eslintcache

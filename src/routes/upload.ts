@@ -20,17 +20,17 @@ router.post("/avatar", multer.single("avatar"), async (req, res) => {
         height: area.height,
         width: area.width,
         top: area.y,
-        left: area.x,
+        left: area.x
       })
       .resize({ width: 150, height: 150 })
       .toFile(newFile);
 
     const upload = await cloudinary.uploader.upload(newFile);
-    await User.findByIdAndUpdate(res.locals.user, { avatar: upload.secure_url });
+    await User.findByIdAndUpdate(res.locals.user, {
+      avatar: upload.secure_url
+    });
     res.send(upload.secure_url);
-  }
-
-  catch (error) {
+  } catch (error) {
     res.sendStatus(500);
     console.error(error);
   }

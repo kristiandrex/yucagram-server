@@ -22,13 +22,15 @@ const schema = new Schema({
     default:
       "https://res.cloudinary.com/kristiantorrex/image/upload/v1603257949/chat-mern-ts-avatar.svg"
   },
-  chats: [{
-    type: Types.ObjectId,
-    ref: "Chat"
-  }],
+  chats: [
+    {
+      type: Types.ObjectId,
+      ref: "Chat"
+    }
+  ],
   role: {
     type: String,
-    default: "USER",
+    default: "USER"
   }
 });
 
