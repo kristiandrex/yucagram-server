@@ -18,7 +18,7 @@ async function availableUsername(req: Request, res: Response): Promise<void> {
   try {
     const value = <string>req.query.value;
 
-    if (!value.match(patternUsername)) {
+    if (!patternUsername.test(value)) {
       res.send(<FieldAvailable>{
         available: false,
         message: invalidUsername
