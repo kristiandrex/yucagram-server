@@ -1,16 +1,18 @@
-import { connect } from "mongoose";
+import mongoose from "mongoose";
+import { MONGO_URI } from "@config";
 
-function init(): void {
-  connect(<string>process.env.MONGO, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useCreateIndex: true,
-    useFindAndModify: false
-  })
-    .then(() => console.log("Connected to MongoDB"))
+function connect(): void {
+  mongoose
+    .connect(<string>MONGO_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      useCreateIndex: true,
+      useFindAndModify: false
+    })
+    .then((db) => console.log("Connected to MongoDB: ", db.connection.name))
     .catch((error) => console.error(error));
 }
 
 export default {
-  init
+  connect
 };

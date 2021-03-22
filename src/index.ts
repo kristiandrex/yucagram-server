@@ -1,4 +1,3 @@
-import "module-alias/register";
 import dotenv from "dotenv";
 import express from "express";
 import { createServer } from "http";
@@ -6,6 +5,11 @@ import cors from "cors";
 
 dotenv.config();
 
+if (process.env.NODE_ENV === "production") {
+  require("module-alias/register");
+}
+
+import { corsOrigin } from "@config";
 import routes from "@routes/index";
 import socket from "@util/socket";
 import mongoose from "@util/mongoose";
@@ -13,7 +17,7 @@ import mongoose from "@util/mongoose";
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cors());
+app.use(cors({ origin: corsOrigin }));
 app.use("/", routes);
 
 const server = createServer(app);
@@ -24,4 +28,4 @@ server.listen(process.env.PORT, () => {
   console.log("Server on port", process.env.PORT);
 });
 
-mongoose.init();
+mongoose.connect();

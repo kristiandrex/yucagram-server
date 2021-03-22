@@ -1,23 +1,8 @@
 import { Router } from "express";
-import User from "@models/user";
 import authToken from "@middlewares/authToken";
+import controller from "@controllers/search";
 
 const router = Router();
-
-router.post("/", authToken, async (req, res) => {
-  try {
-    const { value, ignore } = req.body;
-
-    const users = await User.find(
-      { username: { $regex: value, $nin: ignore } },
-      "avatar username role"
-    ).limit(5);
-
-    res.send(users);
-  } catch (error) {
-    res.sendStatus(500);
-    console.error(error);
-  }
-});
+router.post("/", authToken, controller);
 
 export default router;

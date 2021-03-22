@@ -34,4 +34,6 @@ const schema = new Schema(
   { timestamps: true }
 );
 
-export default model<ChatI>("Chat", schema);
+const Chat = model<ChatI>("Chat", schema);
+
+export default Chat;

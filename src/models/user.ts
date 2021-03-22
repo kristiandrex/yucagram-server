@@ -42,4 +42,6 @@ schema.methods.toJSON = function () {
   return object;
 };
 
-export default model<UserI>("User", schema);
+const User = model<UserI>("User", schema);
+
+export default User;

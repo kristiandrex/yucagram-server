@@ -1,33 +1,14 @@
 import { Router } from "express";
-import { check } from "express-validator";
-import validateFields from "@middlewares/validateFields";
-import signup from "@controllers/signup";
-import signin from "@controllers/signin";
+import signup from "@routes/signup";
+import signin from "@routes/signin";
 import auth from "@routes/auth";
+import validate from "@routes/validate";
 
 const router = Router();
 
-router.post(
-  "/signup",
-  [
-    check("username", "Este campo es obligatorio").notEmpty(),
-    check("email", "Este campo es obligatorio").isEmail(),
-    check("password", "Este campo es obligatorio").notEmpty(),
-    validateFields
-  ],
-  signup
-);
-
-router.post(
-  "/signin",
-  [
-    check("username", "Este campo es obligatorio").notEmpty(),
-    check("password", "Este campo es obligatorio").notEmpty(),
-    validateFields
-  ],
-  signin
-);
-
 router.use("/auth", auth);
+router.use("/validate", validate);
+router.use("/signup", signup);
+router.use("/signin", signin);
 
 export default router;

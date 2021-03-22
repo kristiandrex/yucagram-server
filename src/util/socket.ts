@@ -4,17 +4,13 @@ import jwt from "jsonwebtoken";
 import Message from "@models/message";
 import Chat from "@models/chat";
 import { UserI } from "@types";
+import { corsOrigin } from "@config";
 
 let instance: io.Server;
 
-const origin =
-  process.env.NODE_ENV === "production"
-    ? "https://yucagram.vercel.app"
-    : "http://localhost:3000";
-
 const socketOptions = {
   cors: {
-    origin,
+    origin: corsOrigin,
     methods: ["GET", "POST"],
     credentials: true,
     allowedHeaders: ["token"]

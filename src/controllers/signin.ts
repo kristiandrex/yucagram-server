@@ -8,17 +8,14 @@ export default async function (req: Request, res: Response): Promise<void> {
     const user = await User.findOne({ username: req.body.username });
 
     if (!user) {
-      res.sendStatus(403);
+      res.sendStatus(400);
       return;
     }
 
-    const matchPassword: boolean = bcrypt.compareSync(
-      req.body.password,
-      user.password
-    );
+    const matchPassword = bcrypt.compareSync(req.body.password, user.password);
 
     if (!matchPassword) {
-      res.sendStatus(404);
+      res.sendStatus(400);
       return;
     }
 
