@@ -1,6 +1,7 @@
 import { Response, NextFunction, Request } from "express";
-import jwt from "jsonwebtoken";
 import User from "@models/user";
+import TokenError from "@util/TokenError";
+import verifyToken from "@util/verifyToken";
 
 export default async function authToken(
   req: Request,
@@ -8,12 +9,7 @@ export default async function authToken(
   next: NextFunction
 ): Promise<void> {
   try {
-    if (!req.headers.authorization) {
-      res.sendStatus(401);
-      return;
-    }
-
-    const _id = jwt.verify(req.headers.authorization, <string>process.env.SEED);
+    const _id = verifyToken(req.headers.authorization);
     const user = await User.findById(_id);
 
     if (!user) {
@@ -24,6 +20,11 @@ export default async function authToken(
     res.locals.user = user._id;
     next();
   } catch (error) {
+    if (error instanceof TokenError) {
+      res.sendStatus(401);
+      return;
+    }
+
     res.sendStatus(500);
     console.error(error);
   }

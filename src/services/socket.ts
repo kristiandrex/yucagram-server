@@ -4,13 +4,13 @@ import jwt from "jsonwebtoken";
 import Message from "@models/message";
 import Chat from "@models/chat";
 import { UserI } from "@types";
-import { corsOrigin } from "@config";
+import { clientUrl } from "@config";
 
 let instance: io.Server;
 
 const socketOptions = {
   cors: {
-    origin: corsOrigin,
+    origin: clientUrl,
     methods: ["GET", "POST"],
     credentials: true,
     allowedHeaders: ["token"]

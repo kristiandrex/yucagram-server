@@ -9,15 +9,15 @@ if (process.env.NODE_ENV === "production") {
   require("module-alias/register");
 }
 
-import { corsOrigin } from "@config";
+import { clientUrl } from "@config";
 import routes from "@routes/index";
-import socket from "@util/socket";
-import mongoose from "@util/mongoose";
+import socket from "@services/socket";
+import mongoose from "@services/mongoose";
 
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cors({ origin: corsOrigin }));
+app.use(cors({ origin: clientUrl }));
 app.use("/", routes);
 
 const server = createServer(app);

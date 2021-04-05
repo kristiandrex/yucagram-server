@@ -1,5 +1,5 @@
 //prettier-ignore
-export const corsOrigin = process.env.NODE_ENV === "production"
+export const clientUrl = process.env.NODE_ENV === "production"
   ? "https://yucagram.vercel.app"
   : "http://localhost:3000";
 

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import multer from "@util/multer";
+import multer from "@services/multer";
 import checkFolders from "@middlewares/checkfolders";
 import controller from "@controllers/upload";
 

@@ -1,7 +1,7 @@
 import path from "path";
 import sharp from "sharp";
 import { Request, Response } from "express";
-import cloudinary from "@util/cloudinary";
+import cloudinary from "@services/cloudinary";
 import User from "@models/user";
 
 async function uploadAvatar(req: Request, res: Response): Promise<void> {

@@ -3,7 +3,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import User from "@models/user";
 
-async function signup(req: Request, res: Response): Promise<void> {
+async function controller(req: Request, res: Response): Promise<void> {
   const { username, email } = req.body;
 
   try {
@@ -13,11 +13,18 @@ async function signup(req: Request, res: Response): Promise<void> {
     const token = jwt.sign(user._id.toString(), <string>process.env.SEED);
     await user.save();
 
-    res.send({ token, user });
+    res.status(201).send({
+      ok: true,
+      message: "El usuario se registró correctamente.",
+      token,
+      user
+    });
   } catch (error) {
-    res.sendStatus(500);
+    res
+      .status(500)
+      .send({ ok: false, message: "Hubo un error, intenta más tarde." });
     console.error(error);
   }
 }
 
-export default signup;
+export default controller;

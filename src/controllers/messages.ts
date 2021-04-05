@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import Message from "@models/message";
 import Chat from "@models/chat";
 import User from "@models/user";
-import socket from "@util/socket";
+import socket from "@services/socket";
 
 async function createMessage(req: Request, res: Response): Promise<void> {
   try {
