@@ -1,12 +1,13 @@
-import io from "socket.io";
+import { Server, Socket } from "socket.io";
 import http from "http";
-import jwt from "jsonwebtoken";
 import Message from "@models/message";
 import Chat from "@models/chat";
-import { UserI } from "@types";
+import User from "@models/user";
+import authSocket from "@middlewares/authSocket";
 import { clientUrl } from "@config";
+import { MessageI } from "@types";
 
-let instance: io.Server;
+let instance: Server;
 
 const socketOptions = {
   cors: {
@@ -18,55 +19,89 @@ const socketOptions = {
 };
 
 function connect(httpServer: http.Server): void {
-  instance = new io.Server(httpServer, socketOptions);
-  instance.use(middleware);
-  instance.on("connection", listeners);
+  instance = new Server(httpServer, socketOptions);
+  instance.use(authSocket);
+
+  instance.on("connection", (client) => {
+    client.on("SEND_MESSAGE", handleSendMessage);
+    client.on("READ_MESSAGE", handleReadMessage);
+  });
 }
 
-function middleware(socket: io.Socket, next: () => void) {
-  const token = <string>socket.handshake.headers.token;
-
+async function handleReadMessage(
+  this: Socket,
+  _id: string,
+  callback: (_id?: string) => void
+) {
   try {
-    const _id = <string>jwt.verify(token, <string>process.env.SEED);
-    socket.join(_id);
-    next();
+    const message = await Message.findByIdAndUpdate(_id, { seen: true });
+
+    if (!message) {
+      return;
+    }
+
+    const chatFrom = await Chat.findOne({ from: message.from, to: message.to });
+    const chatTo = await Chat.findOneAndUpdate(
+      { from: message.to, to: message.from },
+      { $inc: { unread: -1 } }
+    );
+
+    this.to(message.from.toString()).emit("READ_MESSAGE", {
+      message,
+      chat: chatFrom?._id
+    });
+
+    callback(chatTo?._id);
   } catch (error) {
     console.error(error);
   }
 }
 
-function listeners(socket: io.Socket) {
-  socket.on("READ_MESSAGE", async (_id, response) => {
-    try {
-      const message = await Message.findByIdAndUpdate(_id, { seen: true });
+async function handleSendMessage(
+  this: Socket,
+  payload: MessageI,
+  callback: (message: MessageI) => void
+) {
+  try {
+    const message = new Message(payload);
+    await message.save();
+    const { _id } = message;
 
-      if (message) {
-        const from = await Chat.findOne({ from: message.from, to: message.to });
+    await Chat.findOneAndUpdate(
+      { from: payload.from, to: payload.to },
+      { $push: { messages: _id } }
+    );
 
-        const to = <UserI>(
-          await Chat.findOneAndUpdate(
-            { from: message.to, to: message.from },
-            { $inc: { unread: -1 } }
-          )
-        );
+    let chatTo = await Chat.findOneAndUpdate(
+      { from: payload.to, to: payload.from },
+      { $push: { messages: _id }, $inc: { unread: 1 } }
+    );
 
-        socket
-          .to(<string>message.from.toString())
-          .emit("READ_MESSAGE", { message, chatId: from?._id });
+    if (!chatTo) {
+      chatTo = new Chat({
+        from: payload.to,
+        to: payload.from,
+        unread: 1,
+        messages: [_id]
+      });
 
-        response(to?._id);
-      }
-    } catch (error) {
-      console.error(error);
+      await chatTo.save();
+      await User.findByIdAndUpdate(payload.to, {
+        $push: { chats: chatTo._id }
+      });
     }
-  });
-}
 
-function getInstance(): io.Server {
-  return instance;
+    this.to(payload.to.toString()).emit("SEND_MESSAGE", {
+      message,
+      chatId: chatTo._id
+    });
+
+    callback(message);
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 export default {
-  connect,
-  getInstance
+  connect
 };

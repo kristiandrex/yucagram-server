@@ -18,7 +18,7 @@ function get(req: Request, res: Response): void {
 
 async function post(req: Request, res: Response): Promise<void> {
   try {
-    const token = verifyToken(req.headers.authorization);
+    const token = <any>verifyToken(req.headers.authorization);
     const { password, repeat, email } = req.body;
 
     if (token.email !== email) {

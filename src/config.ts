@@ -7,3 +7,5 @@ export const clientUrl = process.env.NODE_ENV === "production"
 export const MONGO_URI = process.env.NODE_ENV === "production"
   ? process.env.MONGO_URI
   : process.env.TEST_MONGO_URI;
+
+export const port = process.env.PORT || 5000;

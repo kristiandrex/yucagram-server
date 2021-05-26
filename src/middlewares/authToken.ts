@@ -9,7 +9,7 @@ export default async function authToken(
   next: NextFunction
 ): Promise<void> {
   try {
-    const _id = verifyToken(req.headers.authorization);
+    const _id = <string>verifyToken(req.headers.authorization);
     const user = await User.findById(_id);
 
     if (!user) {
