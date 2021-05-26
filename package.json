@@ -4,7 +4,7 @@
 	"description": "Chat created with Typescript and MERN Stack.",
 	"scripts": {
 		"dev": "cross-env NODE_ENV=development nodemon",
-		"start": "cross-env NODE_ENV=production node build/index.js",
+		"start": "cross-env NODE_ENV=production node -r module-alias/register build/index.js",
 		"build": "tsc",
 		"heroku-postbuild": "tsc",
 		"lint": "eslint --fix src/**/*.ts",
@@ -19,7 +19,6 @@
 		"@types/dotenv": "^8.2.0",
 		"@types/express": "^4.17.6",
 		"@types/jsonwebtoken": "^8.5.0",
-		"@types/module-alias": "^2.0.0",
 		"@types/mongoose": "^5.10.3",
 		"@types/mongoose-unique-validator": "^1.0.4",
 		"@types/multer": "^1.4.3",
@@ -66,9 +65,9 @@
 		"@middlewares": "build/middlewares",
 		"@models": "build/models",
 		"@routes": "build/routes",
-    "@services": "build/services",
+		"@services": "build/services",
 		"@types": "build/types.js",
-    "@util": "build/util"
+		"@util": "build/util"
 	},
 	"husky": {
 		"hooks": {
